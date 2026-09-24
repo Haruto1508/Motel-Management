@@ -1,0 +1,20 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Motel Management (Web Server)",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "web-server",
+            "args": [
+                "--web-port=8080"
+            ]
+        },
+        {
+            "name": "Motel Management (Edge)",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "edge"
+        }
+    ]
+}

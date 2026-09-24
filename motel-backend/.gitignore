@@ -1,0 +1,49 @@
+# .gitignore for Motel Backend (Java/Gradle/Spring Boot)
+# -------------------------------------------------
+# Build output
+/build/
+/out/
+/.gradle/
+
+# Gradle wrapper (optional if you commit it)
+#gradle/wrapper/gradle-wrapper.jar
+#gradle/wrapper/gradle-wrapper.properties
+
+# IDE files
+/.idea/
+/.vscode/
+*.iml
+*.ipr
+*.iws
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+*.tmp
+*.swp
+
+# Maven/Gradle caches (optional)
+~/.m2/repository/
+~/.gradle/caches/
+
+# Sensitive configuration
+.env
+
+# JAR/WAR/EAR packages
+*.jar
+*.war
+*.ear
+
+# Generated source files
+generated-sources/
+
+# Miscellaneous
+*.class
+
+# End of .gitignore
