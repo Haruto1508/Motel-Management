@@ -225,7 +225,7 @@ public class RoomService {
         if (room != null) {
             int currentCount = (int) roomMemberRepository.countByRoomId(roomId);
             room.setCurrentOccupancy(currentCount);
-            if (currentCount == 0 && "OCCUPIED".equals(room.getStatus())) {
+            if (currentCount == 0 && room.getStatus() == RoomStatus.OCCUPIED) {
                 room.setStatus(RoomStatus.AVAILABLE);
             }
             roomRepository.save(room);
