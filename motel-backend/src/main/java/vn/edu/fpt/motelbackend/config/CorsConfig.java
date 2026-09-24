@@ -3,8 +3,8 @@ package vn.edu.fpt.motelbackend.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,16 +13,21 @@ import java.util.List;
 public class CorsConfig {
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(List.of("*"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "Accept"));
-        configuration.setAllowCredentials(true);
-        configuration.setMaxAge(3600L);
+    public CorsFilter corsFilter() {
+        CorsConfiguration config = new CorsConfiguration();
+        // Allow any origin during development
+        config.addAllowedOriginPattern("*");
+        // Allow all HTTP methods
+        config.addAllowedMethod("*");
+        // Allow any headers (including Authorization, Content-Type, etc.)
+        config.addAllowedHeader("*");
+        // Expose all headers to the client
+        config.addExposedHeader("*");
+        // Enable sending cookies / Authorization header
+        config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
     }
 }
