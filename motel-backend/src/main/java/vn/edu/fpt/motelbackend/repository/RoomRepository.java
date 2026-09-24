@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import vn.edu.fpt.motelbackend.entity.Room;
+import vn.edu.fpt.motelbackend.enums.RoomStatus;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,5 +23,5 @@ public interface RoomRepository extends JpaRepository<Room, String> {
                                @Param("status") String status,
                                @Param("floor") Integer floor);
 
-    long countByStatus(String status);
+    long countByStatus(RoomStatus status);
 }

@@ -9,6 +9,7 @@ import vn.edu.fpt.motelbackend.repository.TenantRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import vn.edu.fpt.motelbackend.enums.RoomStatus;
 
 @Service
 @RequiredArgsConstructor
@@ -24,9 +25,9 @@ public class DashboardService {
                 : LocalDateTime.now().format(DateTimeFormatter.ofPattern("MM/yyyy"));
 
         int totalRooms = (int) roomRepository.count();
-        int occupiedRooms = (int) roomRepository.countByStatus("OCCUPIED");
-        int availableRooms = (int) roomRepository.countByStatus("AVAILABLE");
-        int maintenanceRooms = (int) roomRepository.countByStatus("MAINTENANCE");
+        int occupiedRooms = (int) roomRepository.countByStatus(RoomStatus.OCCUPIED);
+        int availableRooms = (int) roomRepository.countByStatus(RoomStatus.AVAILABLE);
+        int maintenanceRooms = (int) roomRepository.countByStatus(RoomStatus.MAINTENANCE);
 
         double occupancyRate = totalRooms > 0 ? ((double) occupiedRooms / totalRooms) * 100.0 : 0.0;
         int totalTenants = (int) tenantRepository.countByStatus("ACTIVE");
