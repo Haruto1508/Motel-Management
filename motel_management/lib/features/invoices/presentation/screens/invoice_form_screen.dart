@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rental_management/core/utils/currency_formatter.dart';
@@ -14,16 +14,16 @@ import 'package:rental_management/features/invoices/presentation/providers/invoi
 import 'package:rental_management/features/rooms/presentation/providers/rooms_providers.dart';
 import 'package:rental_management/features/utilities/presentation/providers/utility_providers.dart';
 
-class InvoiceFormPage extends ConsumerStatefulWidget {
+class InvoiceFormScreen extends ConsumerStatefulWidget {
   final String? initialRoomId;
 
-  const InvoiceFormPage({super.key, this.initialRoomId});
+  const InvoiceFormScreen({super.key, this.initialRoomId});
 
   @override
-  ConsumerState<InvoiceFormPage> createState() => _InvoiceFormPageState();
+  ConsumerState<InvoiceFormScreen> createState() => _InvoiceFormScreenState();
 }
 
-class _InvoiceFormPageState extends ConsumerState<InvoiceFormPage> {
+class _InvoiceFormScreenState extends ConsumerState<InvoiceFormScreen> {
   final _formKey = GlobalKey<FormState>();
 
   String? _selectedRoomId;

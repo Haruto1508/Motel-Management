@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rental_management/core/utils/currency_formatter.dart';
@@ -16,16 +16,16 @@ import 'package:rental_management/features/rooms/presentation/widgets/room_statu
 import 'package:rental_management/features/tenants/presentation/providers/tenant_providers.dart';
 import 'package:rental_management/features/tenants/presentation/widgets/add_member_dialog.dart';
 
-class RoomDetailPage extends ConsumerStatefulWidget {
+class RoomDetailScreen extends ConsumerStatefulWidget {
   final String roomId;
 
-  const RoomDetailPage({super.key, required this.roomId});
+  const RoomDetailScreen({super.key, required this.roomId});
 
   @override
-  ConsumerState<RoomDetailPage> createState() => _RoomDetailPageState();
+  ConsumerState<RoomDetailScreen> createState() => _RoomDetailScreenState();
 }
 
-class _RoomDetailPageState extends ConsumerState<RoomDetailPage>
+class _RoomDetailScreenState extends ConsumerState<RoomDetailScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 

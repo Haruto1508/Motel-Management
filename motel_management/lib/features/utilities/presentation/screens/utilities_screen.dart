@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rental_management/core/utils/currency_formatter.dart';
@@ -13,14 +13,14 @@ import 'package:rental_management/features/utilities/presentation/providers/util
 import 'package:rental_management/features/utilities/presentation/widgets/service_config_tile.dart';
 import 'package:rental_management/features/utilities/presentation/widgets/utility_reading_card.dart';
 
-class UtilitiesPage extends ConsumerStatefulWidget {
-  const UtilitiesPage({super.key});
+class UtilitiesScreen extends ConsumerStatefulWidget {
+  const UtilitiesScreen({super.key});
 
   @override
-  ConsumerState<UtilitiesPage> createState() => _UtilitiesPageState();
+  ConsumerState<UtilitiesScreen> createState() => _UtilitiesScreenState();
 }
 
-class _UtilitiesPageState extends ConsumerState<UtilitiesPage>
+class _UtilitiesScreenState extends ConsumerState<UtilitiesScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 

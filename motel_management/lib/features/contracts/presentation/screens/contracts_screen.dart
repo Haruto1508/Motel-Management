@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rental_management/core/widgets/app_scaffold.dart';
@@ -10,14 +10,14 @@ import 'package:rental_management/features/contracts/domain/entities/contract_st
 import 'package:rental_management/features/contracts/presentation/providers/contracts_list_controller.dart';
 import 'package:rental_management/features/contracts/presentation/widgets/contract_card.dart';
 
-class ContractsPage extends ConsumerStatefulWidget {
-  const ContractsPage({super.key});
+class ContractsScreen extends ConsumerStatefulWidget {
+  const ContractsScreen({super.key});
 
   @override
-  ConsumerState<ContractsPage> createState() => _ContractsPageState();
+  ConsumerState<ContractsScreen> createState() => _ContractsScreenState();
 }
 
-class _ContractsPageState extends ConsumerState<ContractsPage> {
+class _ContractsScreenState extends ConsumerState<ContractsScreen> {
   final _searchController = TextEditingController();
 
   @override

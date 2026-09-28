@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rental_management/core/utils/date_formatter.dart';
@@ -15,17 +15,17 @@ import 'package:rental_management/features/contracts/presentation/providers/cont
 import 'package:rental_management/features/rooms/presentation/providers/rooms_providers.dart';
 import 'package:rental_management/features/tenants/presentation/providers/tenant_providers.dart';
 
-class ContractFormPage extends ConsumerStatefulWidget {
+class ContractFormScreen extends ConsumerStatefulWidget {
   final String? contractId;
   final String? initialRoomId;
 
-  const ContractFormPage({super.key, this.contractId, this.initialRoomId});
+  const ContractFormScreen({super.key, this.contractId, this.initialRoomId});
 
   @override
-  ConsumerState<ContractFormPage> createState() => _ContractFormPageState();
+  ConsumerState<ContractFormScreen> createState() => _ContractFormScreenState();
 }
 
-class _ContractFormPageState extends ConsumerState<ContractFormPage> {
+class _ContractFormScreenState extends ConsumerState<ContractFormScreen> {
   final _formKey = GlobalKey<FormState>();
 
   final _contractNumberController = TextEditingController();

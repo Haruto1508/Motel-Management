@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rental_management/core/utils/currency_formatter.dart';
@@ -13,16 +13,16 @@ import 'package:rental_management/features/utilities/domain/usecases/record_util
 import 'package:rental_management/features/utilities/presentation/providers/utilities_controller.dart';
 import 'package:rental_management/features/utilities/presentation/providers/utility_providers.dart';
 
-class RecordReadingPage extends ConsumerStatefulWidget {
+class RecordReadingScreen extends ConsumerStatefulWidget {
   final String? initialRoomId;
 
-  const RecordReadingPage({super.key, this.initialRoomId});
+  const RecordReadingScreen({super.key, this.initialRoomId});
 
   @override
-  ConsumerState<RecordReadingPage> createState() => _RecordReadingPageState();
+  ConsumerState<RecordReadingScreen> createState() => _RecordReadingScreenState();
 }
 
-class _RecordReadingPageState extends ConsumerState<RecordReadingPage> {
+class _RecordReadingScreenState extends ConsumerState<RecordReadingScreen> {
   final _formKey = GlobalKey<FormState>();
 
   String? _selectedRoomId;

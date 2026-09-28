@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rental_management/core/utils/date_formatter.dart';
@@ -10,10 +10,10 @@ import 'package:rental_management/features/tenants/presentation/providers/tenant
 import 'package:rental_management/features/tenants/presentation/providers/tenants_list_controller.dart';
 import 'package:rental_management/features/tenants/presentation/widgets/tenant_status_chip.dart';
 
-class TenantDetailPage extends ConsumerWidget {
+class TenantDetailScreen extends ConsumerWidget {
   final String tenantId;
 
-  const TenantDetailPage({super.key, required this.tenantId});
+  const TenantDetailScreen({super.key, required this.tenantId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

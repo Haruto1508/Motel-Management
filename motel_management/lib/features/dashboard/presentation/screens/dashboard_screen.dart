@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rental_management/app/router/app_router.dart';
@@ -12,8 +12,8 @@ import 'package:rental_management/features/dashboard/presentation/widgets/occupa
 import 'package:rental_management/features/dashboard/presentation/widgets/revenue_summary_card.dart';
 import 'package:rental_management/features/dashboard/presentation/widgets/stat_summary_card.dart';
 
-class DashboardPage extends ConsumerWidget {
-  const DashboardPage({super.key});
+class DashboardScreen extends ConsumerWidget {
+  const DashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

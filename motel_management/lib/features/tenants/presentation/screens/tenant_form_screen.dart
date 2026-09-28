@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rental_management/core/utils/date_formatter.dart';
@@ -13,16 +13,16 @@ import 'package:rental_management/features/tenants/domain/usecases/update_tenant
 import 'package:rental_management/features/tenants/presentation/providers/tenant_providers.dart';
 import 'package:rental_management/features/tenants/presentation/providers/tenants_list_controller.dart';
 
-class TenantFormPage extends ConsumerStatefulWidget {
+class TenantFormScreen extends ConsumerStatefulWidget {
   final String? tenantId;
 
-  const TenantFormPage({super.key, this.tenantId});
+  const TenantFormScreen({super.key, this.tenantId});
 
   @override
-  ConsumerState<TenantFormPage> createState() => _TenantFormPageState();
+  ConsumerState<TenantFormScreen> createState() => _TenantFormScreenState();
 }
 
-class _TenantFormPageState extends ConsumerState<TenantFormPage> {
+class _TenantFormScreenState extends ConsumerState<TenantFormScreen> {
   final _formKey = GlobalKey<FormState>();
 
   final _nameController = TextEditingController();

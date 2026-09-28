@@ -1,25 +1,25 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rental_management/features/auth/presentation/pages/login_page.dart';
+import 'package:rental_management/features/auth/presentation/screens/login_screen.dart';
 import 'package:rental_management/features/auth/presentation/providers/auth_providers.dart';
 import 'package:rental_management/features/auth/presentation/providers/auth_state.dart';
-import 'package:rental_management/features/dashboard/presentation/pages/dashboard_page.dart';
-import 'package:rental_management/features/rooms/presentation/pages/room_detail_page.dart';
-import 'package:rental_management/features/rooms/presentation/pages/room_form_page.dart';
-import 'package:rental_management/features/rooms/presentation/pages/rooms_page.dart';
+import 'package:rental_management/features/dashboard/presentation/screens/dashboard_screen.dart';
+import 'package:rental_management/features/rooms/presentation/screens/room_detail_screen.dart';
+import 'package:rental_management/features/rooms/presentation/screens/room_form_screen.dart';
+import 'package:rental_management/features/rooms/presentation/screens/rooms_screen.dart';
 
-import 'package:rental_management/features/contracts/presentation/pages/contract_detail_page.dart';
-import 'package:rental_management/features/contracts/presentation/pages/contract_form_page.dart';
-import 'package:rental_management/features/contracts/presentation/pages/contracts_page.dart';
-import 'package:rental_management/features/invoices/presentation/pages/invoice_detail_page.dart';
-import 'package:rental_management/features/invoices/presentation/pages/invoice_form_page.dart';
-import 'package:rental_management/features/invoices/presentation/pages/invoices_page.dart';
-import 'package:rental_management/features/tenants/presentation/pages/tenant_detail_page.dart';
-import 'package:rental_management/features/tenants/presentation/pages/tenant_form_page.dart';
-import 'package:rental_management/features/tenants/presentation/pages/tenants_page.dart';
-import 'package:rental_management/features/utilities/presentation/pages/record_reading_page.dart';
-import 'package:rental_management/features/utilities/presentation/pages/utilities_page.dart';
+import 'package:rental_management/features/contracts/presentation/screens/contract_detail_screen.dart';
+import 'package:rental_management/features/contracts/presentation/screens/contract_form_screen.dart';
+import 'package:rental_management/features/contracts/presentation/screens/contracts_screen.dart';
+import 'package:rental_management/features/invoices/presentation/screens/invoice_detail_screen.dart';
+import 'package:rental_management/features/invoices/presentation/screens/invoice_form_screen.dart';
+import 'package:rental_management/features/invoices/presentation/screens/invoices_screen.dart';
+import 'package:rental_management/features/tenants/presentation/screens/tenant_detail_screen.dart';
+import 'package:rental_management/features/tenants/presentation/screens/tenant_form_screen.dart';
+import 'package:rental_management/features/tenants/presentation/screens/tenants_screen.dart';
+import 'package:rental_management/features/utilities/presentation/screens/record_reading_screen.dart';
+import 'package:rental_management/features/utilities/presentation/screens/utilities_screen.dart';
 
 /// Centralized route paths
 class AppRoutes {
@@ -72,29 +72,29 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.login,
         name: 'login',
-        builder: (context, state) => const LoginPage(),
+        builder: (context, state) => const LoginScreen(),
       ),
       GoRoute(
         path: AppRoutes.dashboard,
         name: 'dashboard',
-        builder: (context, state) => const DashboardPage(),
+        builder: (context, state) => const DashboardScreen(),
       ),
       GoRoute(
         path: AppRoutes.rooms,
         name: 'rooms',
-        builder: (context, state) => const RoomsPage(),
+        builder: (context, state) => const RoomsScreen(),
         routes: [
           GoRoute(
             path: 'create',
             name: 'room_create',
-            builder: (context, state) => const RoomFormPage(),
+            builder: (context, state) => const RoomFormScreen(),
           ),
           GoRoute(
             path: ':id',
             name: 'room_detail',
             builder: (context, state) {
               final roomId = state.pathParameters['id'] ?? '';
-              return RoomDetailPage(roomId: roomId);
+              return RoomDetailScreen(roomId: roomId);
             },
             routes: [
               GoRoute(
@@ -102,7 +102,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 name: 'room_edit',
                 builder: (context, state) {
                   final roomId = state.pathParameters['id'] ?? '';
-                  return RoomFormPage(roomId: roomId);
+                  return RoomFormScreen(roomId: roomId);
                 },
               ),
             ],
@@ -112,19 +112,19 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.tenants,
         name: 'tenants',
-        builder: (context, state) => const TenantsPage(),
+        builder: (context, state) => const TenantsScreen(),
         routes: [
           GoRoute(
             path: 'create',
             name: 'tenant_create',
-            builder: (context, state) => const TenantFormPage(),
+            builder: (context, state) => const TenantFormScreen(),
           ),
           GoRoute(
             path: ':id',
             name: 'tenant_detail',
             builder: (context, state) {
               final tenantId = state.pathParameters['id'] ?? '';
-              return TenantDetailPage(tenantId: tenantId);
+              return TenantDetailScreen(tenantId: tenantId);
             },
             routes: [
               GoRoute(
@@ -132,7 +132,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 name: 'tenant_edit',
                 builder: (context, state) {
                   final tenantId = state.pathParameters['id'] ?? '';
-                  return TenantFormPage(tenantId: tenantId);
+                  return TenantFormScreen(tenantId: tenantId);
                 },
               ),
             ],
@@ -142,14 +142,14 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.contracts,
         name: 'contracts',
-        builder: (context, state) => const ContractsPage(),
+        builder: (context, state) => const ContractsScreen(),
         routes: [
           GoRoute(
             path: 'create',
             name: 'contract_create',
             builder: (context, state) {
               final roomId = state.uri.queryParameters['roomId'];
-              return ContractFormPage(initialRoomId: roomId);
+              return ContractFormScreen(initialRoomId: roomId);
             },
           ),
           GoRoute(
@@ -157,7 +157,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             name: 'contract_detail',
             builder: (context, state) {
               final contractId = state.pathParameters['id'] ?? '';
-              return ContractDetailPage(contractId: contractId);
+              return ContractDetailScreen(contractId: contractId);
             },
             routes: [
               GoRoute(
@@ -165,7 +165,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 name: 'contract_edit',
                 builder: (context, state) {
                   final contractId = state.pathParameters['id'] ?? '';
-                  return ContractFormPage(contractId: contractId);
+                  return ContractFormScreen(contractId: contractId);
                 },
               ),
             ],
@@ -175,14 +175,14 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.utilities,
         name: 'utilities',
-        builder: (context, state) => const UtilitiesPage(),
+        builder: (context, state) => const UtilitiesScreen(),
         routes: [
           GoRoute(
             path: 'record',
             name: 'utility_record',
             builder: (context, state) {
               final roomId = state.uri.queryParameters['roomId'];
-              return RecordReadingPage(initialRoomId: roomId);
+              return RecordReadingScreen(initialRoomId: roomId);
             },
           ),
         ],
@@ -190,14 +190,14 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.invoices,
         name: 'invoices',
-        builder: (context, state) => const InvoicesPage(),
+        builder: (context, state) => const InvoicesScreen(),
         routes: [
           GoRoute(
             path: 'create',
             name: 'invoice_create',
             builder: (context, state) {
               final roomId = state.uri.queryParameters['roomId'];
-              return InvoiceFormPage(initialRoomId: roomId);
+              return InvoiceFormScreen(initialRoomId: roomId);
             },
           ),
           GoRoute(
@@ -205,7 +205,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             name: 'invoice_detail',
             builder: (context, state) {
               final invoiceId = state.pathParameters['id'] ?? '';
-              return InvoiceDetailPage(invoiceId: invoiceId);
+              return InvoiceDetailScreen(invoiceId: invoiceId);
             },
           ),
         ],

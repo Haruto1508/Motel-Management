@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rental_management/core/utils/currency_formatter.dart';
@@ -12,10 +12,10 @@ import 'package:rental_management/features/contracts/presentation/providers/cont
 import 'package:rental_management/features/contracts/presentation/providers/contracts_list_controller.dart';
 import 'package:rental_management/features/contracts/presentation/widgets/contract_status_chip.dart';
 
-class ContractDetailPage extends ConsumerWidget {
+class ContractDetailScreen extends ConsumerWidget {
   final String contractId;
 
-  const ContractDetailPage({super.key, required this.contractId});
+  const ContractDetailScreen({super.key, required this.contractId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

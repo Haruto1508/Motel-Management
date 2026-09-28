@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rental_management/core/widgets/app_scaffold.dart';
@@ -9,8 +9,8 @@ import 'package:rental_management/features/rooms/domain/entities/room_status.dar
 import 'package:rental_management/features/rooms/presentation/providers/rooms_providers.dart';
 import 'package:rental_management/features/rooms/presentation/widgets/room_card.dart';
 
-class RoomsPage extends ConsumerWidget {
-  const RoomsPage({super.key});
+class RoomsScreen extends ConsumerWidget {
+  const RoomsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

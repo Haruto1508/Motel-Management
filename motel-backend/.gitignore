@@ -3,6 +3,7 @@
 # Build output
 /build/
 /out/
+/bin/
 /.gradle/
 
 # Gradle wrapper (optional if you commit it)

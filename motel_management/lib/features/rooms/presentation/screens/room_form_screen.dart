@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -11,18 +11,18 @@ import 'package:rental_management/features/rooms/domain/entities/room_status.dar
 import 'package:rental_management/features/rooms/domain/repositories/room_repository.dart';
 import 'package:rental_management/features/rooms/presentation/providers/rooms_providers.dart';
 
-class RoomFormPage extends ConsumerStatefulWidget {
+class RoomFormScreen extends ConsumerStatefulWidget {
   final String? roomId;
 
-  const RoomFormPage({super.key, this.roomId});
+  const RoomFormScreen({super.key, this.roomId});
 
   bool get isEditing => roomId != null;
 
   @override
-  ConsumerState<RoomFormPage> createState() => _RoomFormPageState();
+  ConsumerState<RoomFormScreen> createState() => _RoomFormScreenState();
 }
 
-class _RoomFormPageState extends ConsumerState<RoomFormPage> {
+class _RoomFormScreenState extends ConsumerState<RoomFormScreen> {
   final _formKey = GlobalKey<FormState>();
   final _roomCodeController = TextEditingController();
   final _nameController = TextEditingController();

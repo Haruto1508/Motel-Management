@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rental_management/core/utils/currency_formatter.dart';
@@ -10,8 +10,8 @@ import 'package:rental_management/features/invoices/domain/entities/invoice_stat
 import 'package:rental_management/features/invoices/presentation/providers/invoices_list_controller.dart';
 import 'package:rental_management/features/invoices/presentation/widgets/invoice_card.dart';
 
-class InvoicesPage extends ConsumerWidget {
-  const InvoicesPage({super.key});
+class InvoicesScreen extends ConsumerWidget {
+  const InvoicesScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
