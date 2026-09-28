@@ -30,16 +30,22 @@ class InvoiceRepositoryImpl implements InvoiceRepository {
         status: status?.code,
         query: query,
       );
-      await localDataSource.cacheInvoices(remoteList);
+      try {
+        await localDataSource.cacheInvoices(remoteList);
+      } catch (_) {}
       return remoteList.map((m) => m.toEntity()).toList();
     } catch (_) {
-      final cachedList = await localDataSource.getCachedInvoices(
-        roomId: roomId,
-        billingMonth: billingMonth,
-        status: status?.code,
-        query: query,
-      );
-      return cachedList.map((m) => m.toEntity()).toList();
+      try {
+        final cachedList = await localDataSource.getCachedInvoices(
+          roomId: roomId,
+          billingMonth: billingMonth,
+          status: status?.code,
+          query: query,
+        );
+        return cachedList.map((m) => m.toEntity()).toList();
+      } catch (_) {
+        return [];
+      }
     }
   }
 
@@ -47,11 +53,15 @@ class InvoiceRepositoryImpl implements InvoiceRepository {
   Future<InvoiceEntity> getInvoiceById(String id) async {
     try {
       final remote = await remoteDataSource.getInvoiceById(id);
-      await localDataSource.saveInvoice(remote);
+      try {
+        await localDataSource.saveInvoice(remote);
+      } catch (_) {}
       return remote.toEntity();
     } catch (_) {
-      final cached = await localDataSource.getCachedInvoiceById(id);
-      if (cached != null) return cached.toEntity();
+      try {
+        final cached = await localDataSource.getCachedInvoiceById(id);
+        if (cached != null) return cached.toEntity();
+      } catch (_) {}
       throw Exception('Không tìm thấy hóa đơn');
     }
   }
@@ -60,7 +70,9 @@ class InvoiceRepositoryImpl implements InvoiceRepository {
   Future<InvoiceEntity> createInvoice(Map<String, dynamic> data) async {
     try {
       final model = await remoteDataSource.createInvoice(data);
-      await localDataSource.saveInvoice(model);
+      try {
+        await localDataSource.saveInvoice(model);
+      } catch (_) {}
       return model.toEntity();
     } catch (_) {
       final offlineId = 'offline_inv_${DateTime.now().millisecondsSinceEpoch}';
@@ -69,7 +81,9 @@ class InvoiceRepositoryImpl implements InvoiceRepository {
       offlineMap['createdAt'] = DateTime.now().toIso8601String();
 
       final model = InvoiceModel.fromJson(offlineMap);
-      await localDataSource.saveInvoice(model);
+      try {
+        await localDataSource.saveInvoice(model);
+      } catch (_) {}
       return model.toEntity();
     }
   }
@@ -78,13 +92,17 @@ class InvoiceRepositoryImpl implements InvoiceRepository {
   Future<InvoiceEntity> updateInvoice(String id, Map<String, dynamic> data) async {
     try {
       final model = await remoteDataSource.updateInvoice(id, data);
-      await localDataSource.saveInvoice(model);
+      try {
+        await localDataSource.saveInvoice(model);
+      } catch (_) {}
       return model.toEntity();
     } catch (_) {
       final offlineMap = Map<String, dynamic>.from(data);
       offlineMap['id'] = id;
       final model = InvoiceModel.fromJson(offlineMap);
-      await localDataSource.saveInvoice(model);
+      try {
+        await localDataSource.saveInvoice(model);
+      } catch (_) {}
       return model.toEntity();
     }
   }
@@ -95,20 +113,24 @@ class InvoiceRepositoryImpl implements InvoiceRepository {
       await remoteDataSource.cancelInvoice(id);
     } catch (_) {}
 
-    final cached = await localDataSource.getCachedInvoiceById(id);
-    if (cached != null) {
-      final updatedMap = cached.toJson();
-      updatedMap['status'] = 'CANCELLED';
-      await localDataSource.saveInvoice(InvoiceModel.fromJson(updatedMap));
-    }
+    try {
+      final cached = await localDataSource.getCachedInvoiceById(id);
+      if (cached != null) {
+        final updatedMap = cached.toJson();
+        updatedMap['status'] = 'CANCELLED';
+        await localDataSource.saveInvoice(InvoiceModel.fromJson(updatedMap));
+      }
+    } catch (_) {}
   }
 
   @override
   Future<PaymentEntity> recordPayment(Map<String, dynamic> data) async {
     try {
       final model = await remoteDataSource.recordPayment(data);
-      await localDataSource.savePayment(model);
-      await _updateCachedInvoiceAfterPayment(model.invoiceId, model.amount);
+      try {
+        await localDataSource.savePayment(model);
+        await _updateCachedInvoiceAfterPayment(model.invoiceId, model.amount);
+      } catch (_) {}
       return model.toEntity();
     } catch (_) {
       final offlineId = 'offline_pay_${DateTime.now().millisecondsSinceEpoch}';
@@ -116,8 +138,10 @@ class InvoiceRepositoryImpl implements InvoiceRepository {
       offlineMap['id'] = offlineId;
 
       final model = PaymentModel.fromJson(offlineMap);
-      await localDataSource.savePayment(model);
-      await _updateCachedInvoiceAfterPayment(model.invoiceId, model.amount);
+      try {
+        await localDataSource.savePayment(model);
+        await _updateCachedInvoiceAfterPayment(model.invoiceId, model.amount);
+      } catch (_) {}
       return model.toEntity();
     }
   }

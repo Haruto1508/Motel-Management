@@ -2,6 +2,8 @@ package vn.edu.fpt.motelbackend.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import vn.edu.fpt.motelbackend.enums.ContracStatus;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -44,9 +46,10 @@ public class Contract {
     @Column(name = "monthly_rent", nullable = false)
     private Double monthlyRent;
 
+    @Enumerated(EnumType.STRING)
     @Column(length = 50)
     @Builder.Default
-    private String status = "ACTIVE"; // ACTIVE, EXPIRED, TERMINATED
+    private ContracStatus status = ContracStatus.ACTIVE; // ACTIVE, EXPIRED, TERMINATED
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

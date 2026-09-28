@@ -22,14 +22,20 @@ class UtilityRepositoryImpl implements UtilityRepository {
         roomId: roomId,
         billingMonth: billingMonth,
       );
-      await localDataSource.cacheReadings(remoteList);
+      try {
+        await localDataSource.cacheReadings(remoteList);
+      } catch (_) {}
       return remoteList.map((m) => m.toEntity()).toList();
     } catch (_) {
-      final cachedList = await localDataSource.getCachedReadings(
-        roomId: roomId,
-        billingMonth: billingMonth,
-      );
-      return cachedList.map((m) => m.toEntity()).toList();
+      try {
+        final cachedList = await localDataSource.getCachedReadings(
+          roomId: roomId,
+          billingMonth: billingMonth,
+        );
+        return cachedList.map((m) => m.toEntity()).toList();
+      } catch (_) {
+        return [];
+      }
     }
   }
 
@@ -38,20 +44,28 @@ class UtilityRepositoryImpl implements UtilityRepository {
     try {
       final remote = await remoteDataSource.getLatestReading(roomId);
       if (remote != null) {
-        await localDataSource.saveReading(remote);
+        try {
+          await localDataSource.saveReading(remote);
+        } catch (_) {}
         return remote.toEntity();
       }
     } catch (_) {}
 
-    final cached = await localDataSource.getLatestCachedReading(roomId);
-    return cached?.toEntity();
+    try {
+      final cached = await localDataSource.getLatestCachedReading(roomId);
+      return cached?.toEntity();
+    } catch (_) {
+      return null;
+    }
   }
 
   @override
   Future<UtilityReadingEntity> recordReading(Map<String, dynamic> data) async {
     try {
       final model = await remoteDataSource.recordReading(data);
-      await localDataSource.saveReading(model);
+      try {
+        await localDataSource.saveReading(model);
+      } catch (_) {}
       return model.toEntity();
     } catch (_) {
       final offlineId = 'offline_reading_${DateTime.now().millisecondsSinceEpoch}';
@@ -60,7 +74,9 @@ class UtilityRepositoryImpl implements UtilityRepository {
       offlineMap['createdAt'] = DateTime.now().toIso8601String();
 
       final model = UtilityReadingModel.fromJson(offlineMap);
-      await localDataSource.saveReading(model);
+      try {
+        await localDataSource.saveReading(model);
+      } catch (_) {}
       return model.toEntity();
     }
   }
@@ -69,13 +85,17 @@ class UtilityRepositoryImpl implements UtilityRepository {
   Future<UtilityReadingEntity> updateReading(String id, Map<String, dynamic> data) async {
     try {
       final model = await remoteDataSource.updateReading(id, data);
-      await localDataSource.saveReading(model);
+      try {
+        await localDataSource.saveReading(model);
+      } catch (_) {}
       return model.toEntity();
     } catch (_) {
       final offlineMap = Map<String, dynamic>.from(data);
       offlineMap['id'] = id;
       final model = UtilityReadingModel.fromJson(offlineMap);
-      await localDataSource.saveReading(model);
+      try {
+        await localDataSource.saveReading(model);
+      } catch (_) {}
       return model.toEntity();
     }
   }
@@ -85,18 +105,26 @@ class UtilityRepositoryImpl implements UtilityRepository {
     try {
       await remoteDataSource.deleteReading(id);
     } catch (_) {}
-    await localDataSource.deleteCachedReading(id);
+    try {
+      await localDataSource.deleteCachedReading(id);
+    } catch (_) {}
   }
 
   @override
   Future<List<ServiceConfigEntity>> getServices() async {
     try {
       final remoteServices = await remoteDataSource.getServices();
-      await localDataSource.cacheServices(remoteServices);
+      try {
+        await localDataSource.cacheServices(remoteServices);
+      } catch (_) {}
       return remoteServices.map((m) => m.toEntity()).toList();
     } catch (_) {
-      final cachedServices = await localDataSource.getCachedServices();
-      return cachedServices.map((m) => m.toEntity()).toList();
+      try {
+        final cachedServices = await localDataSource.getCachedServices();
+        return cachedServices.map((m) => m.toEntity()).toList();
+      } catch (_) {
+        return [];
+      }
     }
   }
 
@@ -104,23 +132,29 @@ class UtilityRepositoryImpl implements UtilityRepository {
   Future<ServiceConfigEntity> updateService(String id, double unitPrice) async {
     try {
       final model = await remoteDataSource.updateService(id, unitPrice);
-      await localDataSource.saveService(model);
+      try {
+        await localDataSource.saveService(model);
+      } catch (_) {}
       return model.toEntity();
     } catch (_) {
-      final cached = await localDataSource.getCachedServices();
-      final index = cached.indexWhere((s) => s.id == id);
-      if (index != -1) {
-        final updated = ServiceConfigModel(
-          id: cached[index].id,
-          name: cached[index].name,
-          type: cached[index].type,
-          unitPrice: unitPrice,
-          unitName: cached[index].unitName,
-          isActive: cached[index].isActive,
-        );
-        await localDataSource.saveService(updated);
-        return updated.toEntity();
-      }
+      try {
+        final cached = await localDataSource.getCachedServices();
+        final index = cached.indexWhere((s) => s.id == id);
+        if (index != -1) {
+          final updated = ServiceConfigModel(
+            id: cached[index].id,
+            name: cached[index].name,
+            type: cached[index].type,
+            unitPrice: unitPrice,
+            unitName: cached[index].unitName,
+            isActive: cached[index].isActive,
+          );
+          try {
+            await localDataSource.saveService(updated);
+          } catch (_) {}
+          return updated.toEntity();
+        }
+      } catch (_) {}
       throw Exception('Service not found');
     }
   }

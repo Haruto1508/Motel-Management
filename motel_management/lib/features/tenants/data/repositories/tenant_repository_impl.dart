@@ -23,19 +23,23 @@ class TenantRepositoryImpl implements TenantRepository {
       );
 
       // Lưu trữ đồng bộ vào SQLite phục vụ Offline
-      await localDataSource.cacheTenants(models);
+      try {
+        await localDataSource.cacheTenants(models);
+      } catch (_) {}
 
       return models.map((m) => m.toEntity()).toList();
     } catch (e) {
       // Khi offline / server chưa bật: Fallback đọc từ SQLite
-      final cachedModels = await localDataSource.getCachedTenants(
-        query: query,
-        status: status?.code,
-      );
+      try {
+        final cachedModels = await localDataSource.getCachedTenants(
+          query: query,
+          status: status?.code,
+        );
 
-      if (cachedModels.isNotEmpty) {
-        return cachedModels.map((m) => m.toEntity()).toList();
-      }
+        if (cachedModels.isNotEmpty) {
+          return cachedModels.map((m) => m.toEntity()).toList();
+        }
+      } catch (_) {}
 
       rethrow;
     }
@@ -45,13 +49,17 @@ class TenantRepositoryImpl implements TenantRepository {
   Future<TenantEntity> getTenantById(String id) async {
     try {
       final model = await remoteDataSource.getTenantById(id);
-      await localDataSource.cacheTenants([model]);
+      try {
+        await localDataSource.cacheTenants([model]);
+      } catch (_) {}
       return model.toEntity();
     } catch (e) {
-      final cachedModel = await localDataSource.getCachedTenantById(id);
-      if (cachedModel != null) {
-        return cachedModel.toEntity();
-      }
+      try {
+        final cachedModel = await localDataSource.getCachedTenantById(id);
+        if (cachedModel != null) {
+          return cachedModel.toEntity();
+        }
+      } catch (_) {}
       rethrow;
     }
   }
@@ -59,21 +67,27 @@ class TenantRepositoryImpl implements TenantRepository {
   @override
   Future<TenantEntity> createTenant(Map<String, dynamic> data) async {
     final model = await remoteDataSource.createTenant(data);
-    await localDataSource.cacheTenants([model]);
+    try {
+      await localDataSource.cacheTenants([model]);
+    } catch (_) {}
     return model.toEntity();
   }
 
   @override
   Future<TenantEntity> updateTenant(String id, Map<String, dynamic> data) async {
     final model = await remoteDataSource.updateTenant(id, data);
-    await localDataSource.cacheTenants([model]);
+    try {
+      await localDataSource.cacheTenants([model]);
+    } catch (_) {}
     return model.toEntity();
   }
 
   @override
   Future<void> deleteTenant(String id) async {
     await remoteDataSource.deleteTenant(id);
-    await localDataSource.deleteCachedTenant(id);
+    try {
+      await localDataSource.deleteCachedTenant(id);
+    } catch (_) {}
   }
 
   @override

@@ -28,20 +28,24 @@ class RoomRepositoryImpl implements RoomRepository {
       );
 
       // Lưu trữ đồng bộ vào SQLite cục bộ phục vụ Offline
-      await localDataSource.cacheRooms(models);
+      try {
+        await localDataSource.cacheRooms(models);
+      } catch (_) {}
 
       return models.map((m) => m.toEntity()).toList();
     } catch (e) {
       // Khi mất mạng hoặc API lỗi: Tự động fallback đọc dữ liệu đã lưu trong SQLite
-      final cachedModels = await localDataSource.getCachedRooms(
-        query: query,
-        status: status?.code,
-        floor: floor,
-      );
+      try {
+        final cachedModels = await localDataSource.getCachedRooms(
+          query: query,
+          status: status?.code,
+          floor: floor,
+        );
 
-      if (cachedModels.isNotEmpty) {
-        return cachedModels.map((m) => m.toEntity()).toList();
-      }
+        if (cachedModels.isNotEmpty) {
+          return cachedModels.map((m) => m.toEntity()).toList();
+        }
+      } catch (_) {}
 
       rethrow;
     }
@@ -52,14 +56,18 @@ class RoomRepositoryImpl implements RoomRepository {
     try {
       final detailModel = await remoteDataSource.getRoomById(id);
       // Lưu chi tiết vào SQLite
-      await localDataSource.cacheRoomDetail(id, detailModel);
+      try {
+        await localDataSource.cacheRoomDetail(id, detailModel);
+      } catch (_) {}
       return detailModel.toEntity();
     } catch (e) {
       // Fallback chi tiết phòng từ SQLite khi offline
-      final cachedDetail = await localDataSource.getCachedRoomDetail(id);
-      if (cachedDetail != null) {
-        return cachedDetail.toEntity();
-      }
+      try {
+        final cachedDetail = await localDataSource.getCachedRoomDetail(id);
+        if (cachedDetail != null) {
+          return cachedDetail.toEntity();
+        }
+      } catch (_) {}
       rethrow;
     }
   }
@@ -67,20 +75,26 @@ class RoomRepositoryImpl implements RoomRepository {
   @override
   Future<RoomEntity> createRoom(CreateRoomParams params) async {
     final model = await remoteDataSource.createRoom(params.toJson());
-    await localDataSource.cacheRooms([model]);
+    try {
+      await localDataSource.cacheRooms([model]);
+    } catch (_) {}
     return model.toEntity();
   }
 
   @override
   Future<RoomEntity> updateRoom(String id, UpdateRoomParams params) async {
     final model = await remoteDataSource.updateRoom(id, params.toJson());
-    await localDataSource.cacheRooms([model]);
+    try {
+      await localDataSource.cacheRooms([model]);
+    } catch (_) {}
     return model.toEntity();
   }
 
   @override
   Future<void> deleteRoom(String id) async {
     await remoteDataSource.deleteRoom(id);
-    await localDataSource.deleteCachedRoom(id);
+    try {
+      await localDataSource.deleteCachedRoom(id);
+    } catch (_) {}
   }
 }

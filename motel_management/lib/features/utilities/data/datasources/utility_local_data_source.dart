@@ -28,139 +28,169 @@ class UtilityLocalDataSourceImpl implements UtilityLocalDataSource {
 
   @override
   Future<List<UtilityReadingModel>> getCachedReadings({String? roomId, String? billingMonth}) async {
-    final db = await _dbService.database;
-    final whereClauses = <String>[];
-    final whereArgs = <dynamic>[];
+    try {
+      final db = await _dbService.database;
+      if (db == null) return [];
+      final whereClauses = <String>[];
+      final whereArgs = <dynamic>[];
 
-    if (roomId != null && roomId.isNotEmpty) {
-      whereClauses.add('roomId = ?');
-      whereArgs.add(roomId);
+      if (roomId != null && roomId.isNotEmpty) {
+        whereClauses.add('roomId = ?');
+        whereArgs.add(roomId);
+      }
+
+      if (billingMonth != null && billingMonth.isNotEmpty) {
+        whereClauses.add('billingMonth = ?');
+        whereArgs.add(billingMonth);
+      }
+
+      final whereString = whereClauses.isNotEmpty ? whereClauses.join(' AND ') : null;
+
+      final results = await db.query(
+        'cached_utility_readings',
+        where: whereString,
+        whereArgs: whereArgs.isNotEmpty ? whereArgs : null,
+        orderBy: 'readingDate DESC',
+      );
+
+      return results.map((row) => UtilityReadingModel.fromJson(row)).toList();
+    } catch (_) {
+      return [];
     }
-
-    if (billingMonth != null && billingMonth.isNotEmpty) {
-      whereClauses.add('billingMonth = ?');
-      whereArgs.add(billingMonth);
-    }
-
-    final whereString = whereClauses.isNotEmpty ? whereClauses.join(' AND ') : null;
-
-    final results = await db.query(
-      'cached_utility_readings',
-      where: whereString,
-      whereArgs: whereArgs.isNotEmpty ? whereArgs : null,
-      orderBy: 'readingDate DESC',
-    );
-
-    return results.map((row) => UtilityReadingModel.fromJson(row)).toList();
   }
 
   @override
   Future<UtilityReadingModel?> getLatestCachedReading(String roomId) async {
-    final db = await _dbService.database;
-    final results = await db.query(
-      'cached_utility_readings',
-      where: 'roomId = ?',
-      whereArgs: [roomId],
-      orderBy: 'readingDate DESC',
-      limit: 1,
-    );
+    try {
+      final db = await _dbService.database;
+      if (db == null) return null;
+      final results = await db.query(
+        'cached_utility_readings',
+        where: 'roomId = ?',
+        whereArgs: [roomId],
+        orderBy: 'readingDate DESC',
+        limit: 1,
+      );
 
-    if (results.isEmpty) return null;
-    return UtilityReadingModel.fromJson(results.first);
+      if (results.isEmpty) return null;
+      return UtilityReadingModel.fromJson(results.first);
+    } catch (_) {
+      return null;
+    }
   }
 
   @override
   Future<void> cacheReadings(List<UtilityReadingModel> readings) async {
-    final db = await _dbService.database;
-    final batch = db.batch();
+    try {
+      final db = await _dbService.database;
+      if (db == null) return;
+      final batch = db.batch();
 
-    for (final reading in readings) {
-      final json = reading.toJson();
-      json['cachedAt'] = DateTime.now().toIso8601String();
-      batch.insert(
-        'cached_utility_readings',
-        json,
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
-    }
+      for (final reading in readings) {
+        final json = reading.toJson();
+        json['cachedAt'] = DateTime.now().toIso8601String();
+        batch.insert(
+          'cached_utility_readings',
+          json,
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+      }
 
-    await batch.commit(noResult: true);
+      await batch.commit(noResult: true);
+    } catch (_) {}
   }
 
   @override
   Future<void> saveReading(UtilityReadingModel reading) async {
-    final db = await _dbService.database;
-    final json = reading.toJson();
-    json['cachedAt'] = DateTime.now().toIso8601String();
+    try {
+      final db = await _dbService.database;
+      if (db == null) return;
+      final json = reading.toJson();
+      json['cachedAt'] = DateTime.now().toIso8601String();
 
-    await db.insert(
-      'cached_utility_readings',
-      json,
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+      await db.insert(
+        'cached_utility_readings',
+        json,
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    } catch (_) {}
   }
 
   @override
   Future<void> deleteCachedReading(String id) async {
-    final db = await _dbService.database;
-    await db.delete(
-      'cached_utility_readings',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    try {
+      final db = await _dbService.database;
+      if (db == null) return;
+      await db.delete(
+        'cached_utility_readings',
+        where: 'id = ?',
+        whereArgs: [id],
+      );
+    } catch (_) {}
   }
 
   @override
   Future<List<ServiceConfigModel>> getCachedServices() async {
-    final db = await _dbService.database;
-    final results = await db.query(
-      'cached_service_configs',
-      orderBy: 'name ASC',
-    );
+    final defaultServices = [
+      const ServiceConfigModel(id: 'svc-elec', name: 'Điện sinh hoạt', type: 'METER', unitPrice: 3500, unitName: 'kWh'),
+      const ServiceConfigModel(id: 'svc-water', name: 'Nước sinh hoạt', type: 'METER', unitPrice: 25000, unitName: 'm³'),
+      const ServiceConfigModel(id: 'svc-net', name: 'Internet WiFi', type: 'FIXED_ROOM', unitPrice: 100000, unitName: 'phòng/tháng'),
+      const ServiceConfigModel(id: 'svc-trash', name: 'Rác sinh hoạt & Vệ sinh', type: 'FIXED_ROOM', unitPrice: 30000, unitName: 'phòng/tháng'),
+    ];
 
-    if (results.isEmpty) {
-      // Default initial services if cache is empty
-      final defaultServices = [
-        const ServiceConfigModel(id: 'svc-elec', name: 'Điện sinh hoạt', type: 'METER', unitPrice: 3500, unitName: 'kWh'),
-        const ServiceConfigModel(id: 'svc-water', name: 'Nước sinh hoạt', type: 'METER', unitPrice: 25000, unitName: 'm³'),
-        const ServiceConfigModel(id: 'svc-net', name: 'Internet WiFi', type: 'FIXED_ROOM', unitPrice: 100000, unitName: 'phòng/tháng'),
-        const ServiceConfigModel(id: 'svc-trash', name: 'Rác sinh hoạt & Vệ sinh', type: 'FIXED_ROOM', unitPrice: 30000, unitName: 'phòng/tháng'),
-      ];
-      await cacheServices(defaultServices);
+    try {
+      final db = await _dbService.database;
+      if (db == null) return defaultServices;
+      final results = await db.query(
+        'cached_service_configs',
+        orderBy: 'name ASC',
+      );
+
+      if (results.isEmpty) {
+        await cacheServices(defaultServices);
+        return defaultServices;
+      }
+
+      return results.map((row) => ServiceConfigModel.fromJson(row)).toList();
+    } catch (_) {
       return defaultServices;
     }
-
-    return results.map((row) => ServiceConfigModel.fromJson(row)).toList();
   }
 
   @override
   Future<void> cacheServices(List<ServiceConfigModel> services) async {
-    final db = await _dbService.database;
-    final batch = db.batch();
+    try {
+      final db = await _dbService.database;
+      if (db == null) return;
+      final batch = db.batch();
 
-    for (final svc in services) {
-      final json = svc.toJson();
-      json['cachedAt'] = DateTime.now().toIso8601String();
-      batch.insert(
-        'cached_service_configs',
-        json,
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
-    }
+      for (final svc in services) {
+        final json = svc.toJson();
+        json['cachedAt'] = DateTime.now().toIso8601String();
+        batch.insert(
+          'cached_service_configs',
+          json,
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+      }
 
-    await batch.commit(noResult: true);
+      await batch.commit(noResult: true);
+    } catch (_) {}
   }
 
   @override
   Future<void> saveService(ServiceConfigModel service) async {
-    final db = await _dbService.database;
-    final json = service.toJson();
-    json['cachedAt'] = DateTime.now().toIso8601String();
+    try {
+      final db = await _dbService.database;
+      if (db == null) return;
+      final json = service.toJson();
+      json['cachedAt'] = DateTime.now().toIso8601String();
 
-    await db.insert(
-      'cached_service_configs',
-      json,
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+      await db.insert(
+        'cached_service_configs',
+        json,
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    } catch (_) {}
   }
 }

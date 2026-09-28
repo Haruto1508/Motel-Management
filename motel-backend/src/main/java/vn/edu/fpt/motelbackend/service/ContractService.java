@@ -10,6 +10,7 @@ import vn.edu.fpt.motelbackend.dto.contract.TerminateContractRequest;
 import vn.edu.fpt.motelbackend.entity.Contract;
 import vn.edu.fpt.motelbackend.entity.Room;
 import vn.edu.fpt.motelbackend.entity.Tenant;
+import vn.edu.fpt.motelbackend.enums.ContracStatus;
 import vn.edu.fpt.motelbackend.repository.ContractRepository;
 import vn.edu.fpt.motelbackend.repository.RoomRepository;
 import vn.edu.fpt.motelbackend.repository.TenantRepository;
@@ -66,7 +67,7 @@ public class ContractService {
                 .endDate(request.getEndDate())
                 .depositAmount(request.getDepositAmount() != null ? request.getDepositAmount() : 0.0)
                 .monthlyRent(request.getMonthlyRent())
-                .status("ACTIVE")
+                .status(ContracStatus.ACTIVE) // Set default status to ACTIVE
                 .build();
 
         return mapToResponse(contractRepository.save(contract));
@@ -90,7 +91,7 @@ public class ContractService {
         Contract contract = contractRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy hợp đồng với ID: " + id));
 
-        contract.setStatus("TERMINATED");
+        contract.setStatus(ContracStatus.TERMINATED);
         contractRepository.save(contract);
     }
 
@@ -103,7 +104,7 @@ public class ContractService {
         if (request.getNewMonthlyRent() != null) {
             contract.setMonthlyRent(request.getNewMonthlyRent());
         }
-        contract.setStatus("ACTIVE");
+        contract.setStatus(ContracStatus.ACTIVE); // Set status back to ACTIVE upon renewal
 
         return mapToResponse(contractRepository.save(contract));
     }
@@ -120,7 +121,7 @@ public class ContractService {
                 .endDate(contract.getEndDate())
                 .depositAmount(contract.getDepositAmount())
                 .monthlyRent(contract.getMonthlyRent())
-                .status(contract.getStatus())
+                .status(contract.getStatus().toString())
                 .createdAt(contract.getCreatedAt())
                 .updatedAt(contract.getUpdatedAt())
                 .build();

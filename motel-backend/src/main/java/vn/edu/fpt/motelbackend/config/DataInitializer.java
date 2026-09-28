@@ -6,6 +6,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import vn.edu.fpt.motelbackend.entity.*;
+import vn.edu.fpt.motelbackend.enums.ContracStatus;
 import vn.edu.fpt.motelbackend.enums.RoomStatus;
 import vn.edu.fpt.motelbackend.repository.*;
 
@@ -191,7 +192,7 @@ public class DataInitializer implements CommandLineRunner {
                     .endDate(LocalDateTime.now().plusMonths(6))
                     .depositAmount(3500000.0)
                     .monthlyRent(3500000.0)
-                    .status("ACTIVE")
+                    .status(ContracStatus.ACTIVE)
                     .build());
 
             contractRepository.save(Contract.builder()
@@ -202,7 +203,7 @@ public class DataInitializer implements CommandLineRunner {
                     .endDate(LocalDateTime.now().plusMonths(9))
                     .depositAmount(3800000.0)
                     .monthlyRent(3800000.0)
-                    .status("ACTIVE")
+                    .status(ContracStatus.ACTIVE)
                     .build());
 
             // Seed Utility Readings

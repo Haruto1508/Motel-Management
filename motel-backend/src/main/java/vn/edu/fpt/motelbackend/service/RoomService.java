@@ -78,7 +78,7 @@ public class RoomService {
                         .endDate(c.getEndDate())
                         .depositAmount(c.getDepositAmount())
                         .monthlyRent(c.getMonthlyRent())
-                        .status(c.getStatus())
+                        .status(c.getStatus().toString())
                         .createdAt(c.getCreatedAt())
                         .updatedAt(c.getUpdatedAt())
                         .build())

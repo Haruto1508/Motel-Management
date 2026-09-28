@@ -2,7 +2,6 @@ import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 
 /// Dịch vụ quản lý SQLite Database cục bộ phục vụ Offline-first
 class SqliteDatabaseService {
@@ -10,43 +9,38 @@ class SqliteDatabaseService {
   static const int _dbVersion = 1;
 
   Database? _db;
+  bool _isUnavailable = false;
 
-  Future<Database> get database async {
-    if (_db != null) return _db!;
-    _db = await _initDatabase();
-    return _db!;
-  }
+  /// SQLite offline caching is supported on mobile and desktop platforms.
+  bool get isSupported => !kIsWeb;
 
-  Future<Database> _initDatabase() async {
-    if (kIsWeb) {
-      databaseFactory = databaseFactoryFfiWeb;
-      return await databaseFactory.openDatabase(
-        _dbName,
-        options: OpenDatabaseOptions(
-          version: _dbVersion,
-          onCreate: (db, version) async {
-            await _createTables(db);
-          },
-        ),
+  Future<Database?> get database async {
+    if (kIsWeb || _isUnavailable) return null;
+    if (_db != null && _db!.isOpen) return _db;
+
+    try {
+      // Khởi tạo ffi databaseFactory cho Desktop (Windows, macOS, Linux)
+      if (!kIsWeb && (Platform.isWindows || Platform.isLinux || Platform.isMacOS)) {
+        sqfliteFfiInit();
+        databaseFactory = databaseFactoryFfi;
+      }
+
+      final dbPath = await getDatabasesPath();
+      final path = p.join(dbPath, _dbName);
+
+      _db = await openDatabase(
+        path,
+        version: _dbVersion,
+        onCreate: (db, version) async {
+          await _createTables(db);
+        },
       );
+      return _db;
+    } catch (e) {
+      debugPrint('⚠️ [SqliteDatabaseService] Không thể khởi tạo SQLite cục bộ: $e');
+      _isUnavailable = true;
+      return null;
     }
-
-    // Khởi tạo ffi databaseFactory cho Desktop (Windows, macOS, Linux)
-    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
-      sqfliteFfiInit();
-      databaseFactory = databaseFactoryFfi;
-    }
-
-    final dbPath = await getDatabasesPath();
-    final path = p.join(dbPath, _dbName);
-
-    return await openDatabase(
-      path,
-      version: _dbVersion,
-      onCreate: (db, version) async {
-        await _createTables(db);
-      },
-    );
   }
 
   Future<void> _createTables(Database db) async {
@@ -217,6 +211,7 @@ class SqliteDatabaseService {
 
   Future<void> clearAllCache() async {
     final db = await database;
+    if (db == null) return;
     await db.delete('cached_rooms');
     await db.delete('cached_room_details');
     await db.delete('cached_tenants');
@@ -228,7 +223,7 @@ class SqliteDatabaseService {
   }
 
   Future<void> close() async {
-    if (_db != null) {
+    if (_db != null && _db!.isOpen) {
       await _db!.close();
       _db = null;
     }
