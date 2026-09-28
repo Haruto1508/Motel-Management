@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rental_management/features/auth/presentation/screens/login_screen.dart';
@@ -66,7 +66,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
   final listenable = ref.watch(routerListenableProvider);
 
   return GoRouter(
-    initialLocation: AppRoutes.dashboard,
+    initialLocation: AppRoutes.login,
     refreshListenable: listenable,
     routes: [
       GoRoute(

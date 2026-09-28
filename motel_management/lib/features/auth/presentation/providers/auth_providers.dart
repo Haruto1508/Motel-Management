@@ -15,7 +15,8 @@ import 'package:rental_management/features/auth/presentation/providers/auth_stat
 
 final Provider<SecureStorageService> secureStorageProvider =
     Provider<SecureStorageService>((ref) {
-  return SecureStorageService();
+  final preferences = ref.watch(preferencesServiceProvider);
+  return SecureStorageService(preferences: preferences);
 });
 
 final Provider<PreferencesService> preferencesServiceProvider =

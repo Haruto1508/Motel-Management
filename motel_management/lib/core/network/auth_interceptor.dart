@@ -30,15 +30,19 @@ class AuthInterceptor extends QueuedInterceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    // Skip token attachment for auth endpoints
-    final isAuthEndpoint = options.path.contains(AppConstants.endpointLogin) ||
-        options.path.contains(AppConstants.endpointRefresh);
+    try {
+      // Skip token attachment for auth endpoints
+      final isAuthEndpoint = options.path.contains(AppConstants.endpointLogin) ||
+          options.path.contains(AppConstants.endpointRefresh);
 
-    if (!isAuthEndpoint) {
-      final token = await storage.getAccessToken();
-      if (token != null && token.isNotEmpty) {
-        options.headers['Authorization'] = 'Bearer $token';
+      if (!isAuthEndpoint) {
+        final token = await storage.getAccessToken();
+        if (token != null && token.isNotEmpty) {
+          options.headers['Authorization'] = 'Bearer $token';
+        }
       }
+    } catch (e) {
+      debugPrint('⚠️ [AuthInterceptor] Error getting token: $e');
     }
 
     return handler.next(options);
