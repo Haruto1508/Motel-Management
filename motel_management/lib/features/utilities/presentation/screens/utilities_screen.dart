@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rental_management/core/utils/currency_formatter.dart';
@@ -13,14 +13,14 @@ import 'package:rental_management/features/utilities/presentation/providers/util
 import 'package:rental_management/features/utilities/presentation/widgets/service_config_tile.dart';
 import 'package:rental_management/features/utilities/presentation/widgets/utility_reading_card.dart';
 
-class UtilitiesScreen extends ConsumerStatefulWidget {
+class UtilitiesScreen extends StatefulWidget {
   const UtilitiesScreen({super.key});
 
   @override
-  ConsumerState<UtilitiesScreen> createState() => _UtilitiesScreenState();
+  State<UtilitiesScreen> createState() => _UtilitiesScreenState();
 }
 
-class _UtilitiesScreenState extends ConsumerState<UtilitiesScreen>
+class _UtilitiesScreenState extends State<UtilitiesScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
@@ -39,7 +39,6 @@ class _UtilitiesScreenState extends ConsumerState<UtilitiesScreen>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final state = ref.watch(utilitiesControllerProvider);
 
     return AppScaffold(
       title: 'Quản lý Điện, Nước & Dịch vụ',
@@ -63,10 +62,10 @@ class _UtilitiesScreenState extends ConsumerState<UtilitiesScreen>
           Expanded(
             child: TabBarView(
               controller: _tabController,
-              children: [
-                _buildRoomsTab(theme),
-                _buildHistoryTab(theme, state),
-                _buildServicesTab(theme),
+              children: const [
+                _RoomsTab(),
+                _HistoryTab(),
+                _ServicesTab(),
               ],
             ),
           ),
@@ -74,9 +73,14 @@ class _UtilitiesScreenState extends ConsumerState<UtilitiesScreen>
       ),
     );
   }
+}
 
-  // --- TAB 1: DANH SÁCH THEO PHÒNG ---
-  Widget _buildRoomsTab(ThemeData theme) {
+// --- TAB 1: DANH SÁCH THEO PHÒNG ---
+class _RoomsTab extends ConsumerWidget {
+  const _RoomsTab();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     final roomsAsync = ref.watch(roomsListProvider);
 
     return roomsAsync.when(
@@ -94,68 +98,9 @@ class _UtilitiesScreenState extends ConsumerState<UtilitiesScreen>
           itemCount: rooms.length,
           itemBuilder: (context, index) {
             final room = rooms[index];
-            final latestAsync = ref.watch(latestReadingProvider(room.id));
-
-            return AppCard(
-              child: Row(
-                children: [
-                  Container(
-                    width: 52,
-                    height: 52,
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.primaryContainer,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      room.roomCode,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: theme.colorScheme.onPrimaryContainer,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          room.name,
-                          style: theme.textTheme.titleSmall?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        latestAsync.when(
-                          data: (latest) {
-                            if (latest == null) {
-                              return Text(
-                                'Chưa có chỉ số nào',
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  color: theme.colorScheme.onSurfaceVariant,
-                                ),
-                              );
-                            }
-                            return Text(
-                              'Gần nhất: ${latest.currentElectricity.toStringAsFixed(0)} kWh | ${latest.currentWater.toStringAsFixed(0)} m³ (${latest.billingMonth})',
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: theme.colorScheme.onSurfaceVariant,
-                              ),
-                            );
-                          },
-                          loading: () => const Text('Đang tải chỉ số...', style: TextStyle(fontSize: 12)),
-                          error: (_, __) => const Text('Chưa có chỉ số', style: TextStyle(fontSize: 12)),
-                        ),
-                      ],
-                    ),
-                  ),
-                  FilledButton.tonal(
-                    onPressed: () => context.push('/utilities/record?roomId=${room.id}'),
-                    child: const Text('Ghi số'),
-                  ),
-                ],
-              ),
+            return _RoomReadingTile(
+              key: ValueKey(room.id),
+              room: room,
             );
           },
         );
@@ -167,9 +112,89 @@ class _UtilitiesScreenState extends ConsumerState<UtilitiesScreen>
       ),
     );
   }
+}
 
-  // --- TAB 2: LỊCH SỬ CHỐT SỐ ---
-  Widget _buildHistoryTab(ThemeData theme, UtilitiesState state) {
+class _RoomReadingTile extends ConsumerWidget {
+  final dynamic room;
+
+  const _RoomReadingTile({super.key, required this.room});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final latestAsync = ref.watch(latestReadingProvider(room.id as String));
+
+    return AppCard(
+      child: Row(
+        children: [
+          Container(
+            width: 52,
+            height: 52,
+            decoration: BoxDecoration(
+              color: theme.colorScheme.primaryContainer,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            alignment: Alignment.center,
+            child: Text(
+              room.roomCode as String,
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: theme.colorScheme.onPrimaryContainer,
+              ),
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  room.name as String,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                latestAsync.when(
+                  data: (latest) {
+                    if (latest == null) {
+                      return Text(
+                        'Chưa có chỉ số nào',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      );
+                    }
+                    return Text(
+                      'Gần nhất: ${latest.currentElectricity.toStringAsFixed(0)} kWh | ${latest.currentWater.toStringAsFixed(0)} m³ (${latest.billingMonth})',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    );
+                  },
+                  loading: () => const Text('Đang tải chỉ số...', style: TextStyle(fontSize: 12)),
+                  error: (_, __) => const Text('Chưa có chỉ số', style: TextStyle(fontSize: 12)),
+                ),
+              ],
+            ),
+          ),
+          FilledButton.tonal(
+            onPressed: () => context.push('/utilities/record?roomId=${room.id}'),
+            child: const Text('Ghi số'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// --- TAB 2: LỊCH SỬ CHỐT SỐ ---
+class _HistoryTab extends ConsumerWidget {
+  const _HistoryTab();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     final readingsAsync = ref.watch(utilityReadingsProvider((roomId: null, billingMonth: null)));
 
     return readingsAsync.when(
@@ -219,7 +244,11 @@ class _UtilitiesScreenState extends ConsumerState<UtilitiesScreen>
                 padding: const EdgeInsets.all(16),
                 itemCount: readings.length,
                 itemBuilder: (context, index) {
-                  return UtilityReadingCard(reading: readings[index]);
+                  final reading = readings[index];
+                  return UtilityReadingCard(
+                    key: ValueKey(reading.id),
+                    reading: reading,
+                  );
                 },
               ),
             ),
@@ -246,9 +275,15 @@ class _UtilitiesScreenState extends ConsumerState<UtilitiesScreen>
       ],
     );
   }
+}
 
-  // --- TAB 3: CẤU HÌNH BẢNG GIÁ DỊCH VỤ ---
-  Widget _buildServicesTab(ThemeData theme) {
+// --- TAB 3: CẤU HÌNH BẢNG GIÁ DỊCH VỤ ---
+class _ServicesTab extends ConsumerWidget {
+  const _ServicesTab();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     final servicesAsync = ref.watch(serviceConfigsProvider);
 
     return servicesAsync.when(
@@ -272,6 +307,7 @@ class _UtilitiesScreenState extends ConsumerState<UtilitiesScreen>
             const SizedBox(height: 16),
             ...services.map((svc) {
               return ServiceConfigTile(
+                key: ValueKey(svc.id),
                 service: svc,
                 onUpdatePrice: (newPrice) {
                   ref.read(utilitiesControllerProvider.notifier).updateServicePrice(svc.id, newPrice);

@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rental_management/core/utils/currency_formatter.dart';
@@ -157,6 +157,7 @@ class InvoicesScreen extends ConsumerWidget {
                     itemBuilder: (context, index) {
                       final invoice = state.invoices[index];
                       return InvoiceCard(
+                        key: ValueKey(invoice.id),
                         invoice: invoice,
                         onTap: () => context.push('/invoices/${invoice.id}'),
                       );

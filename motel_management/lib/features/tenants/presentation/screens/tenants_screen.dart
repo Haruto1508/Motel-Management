@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rental_management/core/widgets/app_scaffold.dart';
@@ -131,6 +131,7 @@ class _TenantsScreenState extends ConsumerState<TenantsScreen> {
                     itemBuilder: (context, index) {
                       final tenant = state.tenants[index];
                       return TenantCard(
+                        key: ValueKey(tenant.id),
                         tenant: tenant,
                         onTap: () => context.push('/tenants/${tenant.id}'),
                       );

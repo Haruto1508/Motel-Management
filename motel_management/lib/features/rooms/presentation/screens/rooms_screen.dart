@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rental_management/core/widgets/app_scaffold.dart';
@@ -110,6 +110,7 @@ class RoomsScreen extends ConsumerWidget {
                     itemBuilder: (context, index) {
                       final room = state.rooms[index];
                       return RoomCard(
+                        key: ValueKey(room.id),
                         room: room,
                         onTap: () => context.push('/rooms/${room.id}'),
                       );
