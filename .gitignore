@@ -1,0 +1,95 @@
+# ==========================================
+# Root .gitignore for Motel Management Monorepo
+# (Flutter Frontend & Spring Boot Backend)
+# ==========================================
+
+# Operating System files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+[Dd]esktop.ini
+
+# Environment variables & secrets
+.env
+.env.*
+!.env.example
+
+# Log files
+*.log
+logs/
+**/logs/
+
+# Temporary and backup files
+*.tmp
+*.bak
+*.swp
+*~
+
+# ------------------------------------------
+# Backend (Java / Spring Boot / Gradle)
+# ------------------------------------------
+**/build/
+**/bin/
+**/out/
+**/.gradle/
+**/gradle-app.setting
+!**/gradle/wrapper/gradle-wrapper.jar
+!**/gradle/wrapper/gradle-wrapper.properties
+
+# Java package files
+*.jar
+*.war
+*.ear
+*.class
+
+# ------------------------------------------
+# Frontend (Flutter / Dart)
+# ------------------------------------------
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.pub-cache/
+**/.pub/
+**/coverage/
+**/app.*.symbols
+**/app.*.map.json
+**/.widget_preview/
+
+# Android build outputs
+**/android/app/debug/
+**/android/app/profile/
+**/android/app/release/
+**/android/.gradle/
+**/android/captures/
+**/android/local.properties
+
+# iOS/macOS build outputs
+**/ios/Flutter/.last_build_id
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/flutter_export_environment.sh
+
+# Windows / Linux build outputs
+**/windows/flutter/ephemeral/
+**/linux/flutter/ephemeral/
+
+# ------------------------------------------
+# IDE & Editors
+# ------------------------------------------
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/usage.statistics.xml
+.idea/shelf/
+.idea/dictionaries/
+cmake-build-*/
+
+# VS Code user settings
+.vscode/*
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/tasks.json
