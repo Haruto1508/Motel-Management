@@ -180,10 +180,10 @@ class RoomMemberOverviewModel {
     return RoomMemberOverviewModel(
       id: json['id']?.toString() ?? '',
       tenantId: json['tenantId']?.toString() ?? '',
-      fullName: json['fullName'] as String? ?? '',
-      phone: json['phone'] as String? ?? '',
-      role: json['role'] as String? ?? 'MEMBER',
-      moveInDate: json['moveInDate'] as String? ??
+      fullName: json['fullName']?.toString() ?? '',
+      phone: json['phone']?.toString() ?? '',
+      role: json['role']?.toString() ?? 'MEMBER',
+      moveInDate: json['moveInDate']?.toString() ??
           DateTime.now().toIso8601String(),
     );
   }

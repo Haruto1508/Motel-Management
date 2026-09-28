@@ -13,12 +13,18 @@ class TenantCard extends StatelessWidget {
     this.onTap,
   });
 
+  String _getInitial(String name) {
+    final trimmed = name.trim();
+    if (trimmed.isEmpty) return '?';
+    final parts = trimmed.split(RegExp(r'\s+'));
+    if (parts.isEmpty || parts.last.isEmpty) return '?';
+    return parts.last[0].toUpperCase();
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final initial = tenant.fullName.isNotEmpty
-        ? tenant.fullName.trim().split(' ').last[0].toUpperCase()
-        : '?';
+    final initial = _getInitial(tenant.fullName);
 
     return AppCard(
       margin: const EdgeInsets.only(bottom: 12),

@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rental_management/core/utils/currency_formatter.dart';
@@ -278,8 +278,11 @@ class _RoomDetailScreenState extends ConsumerState<RoomDetailScreen>
                   itemBuilder: (context, index) {
                     final member = detail.members[index];
                     return AppCard(
+                      key: ValueKey(member.id),
                       margin: const EdgeInsets.only(bottom: 10),
-                      onTap: () => context.push('/tenants/${member.tenantId}'),
+                      onTap: member.tenantId.isNotEmpty
+                          ? () => context.push('/tenants/${member.tenantId}')
+                          : null,
                       child: Row(
                         children: [
                           CircleAvatar(
@@ -300,10 +303,13 @@ class _RoomDetailScreenState extends ConsumerState<RoomDetailScreen>
                               children: [
                                 Row(
                                   children: [
-                                    Text(
-                                      member.fullName,
-                                      style: theme.textTheme.titleSmall?.copyWith(
-                                        fontWeight: FontWeight.bold,
+                                    Flexible(
+                                      child: Text(
+                                        member.fullName,
+                                        style: theme.textTheme.titleSmall?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
                                     if (member.isPrimary) ...[

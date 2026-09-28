@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class TenantService {
 
     private final TenantRepository tenantRepository;
@@ -81,8 +82,8 @@ public class TenantService {
     private TenantResponse mapToResponse(Tenant tenant) {
         Optional<RoomMember> memberOpt = roomMemberRepository.findFirstByTenantId(tenant.getId());
 
-        String roomId = memberOpt.map(m -> m.getRoom().getId()).orElse(null);
-        String roomCode = memberOpt.map(m -> m.getRoom().getRoomCode()).orElse(null);
+        String roomId = memberOpt.map(RoomMember::getRoom).map(r -> r.getId()).orElse(null);
+        String roomCode = memberOpt.map(RoomMember::getRoom).map(r -> r.getRoomCode()).orElse(null);
 
         return TenantResponse.builder()
                 .id(tenant.getId())

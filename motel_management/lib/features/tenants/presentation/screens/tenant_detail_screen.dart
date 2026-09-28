@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rental_management/core/utils/date_formatter.dart';
@@ -79,9 +79,7 @@ class TenantDetailScreen extends ConsumerWidget {
                         radius: 30,
                         backgroundColor: theme.colorScheme.primaryContainer,
                         child: Text(
-                          tenant.fullName.isNotEmpty
-                              ? tenant.fullName.trim().split(' ').last[0].toUpperCase()
-                              : '?',
+                          _getInitial(tenant.fullName),
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
@@ -118,25 +116,31 @@ class TenantDetailScreen extends ConsumerWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          children: [
-                            Icon(Icons.meeting_room, color: theme.colorScheme.primary),
-                            const SizedBox(width: 12),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Phòng đang ở', style: theme.textTheme.bodySmall),
-                                Text(
-                                  tenant.currentRoomCode ?? 'Xem chi tiết phòng',
-                                  style: theme.textTheme.titleMedium?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: theme.colorScheme.primary,
-                                  ),
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Icon(Icons.meeting_room, color: theme.colorScheme.primary),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Phòng đang ở', style: theme.textTheme.bodySmall),
+                                    Text(
+                                      tenant.currentRoomCode ?? 'Xem chi tiết phòng',
+                                      style: theme.textTheme.titleMedium?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: theme.colorScheme.primary,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          ],
+                              ),
+                            ],
+                          ),
                         ),
+                        const SizedBox(width: 8),
                         const Icon(Icons.arrow_forward_ios, size: 16),
                       ],
                     ),
@@ -205,16 +209,29 @@ class TenantDetailScreen extends ConsumerWidget {
     );
   }
 
+  String _getInitial(String name) {
+    final trimmed = name.trim();
+    if (trimmed.isEmpty) return '?';
+    final parts = trimmed.split(RegExp(r'\s+'));
+    if (parts.isEmpty || parts.last.isEmpty) return '?';
+    return parts.last[0].toUpperCase();
+  }
+
   Widget _buildInfoRow(String label, String value, {bool isPhone = false}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label, style: const TextStyle(color: Colors.grey)),
-        Text(
-          value,
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            color: isPhone && value != 'Chưa có thông tin' ? Colors.blue.shade700 : null,
+        const SizedBox(width: 16),
+        Flexible(
+          child: Text(
+            value,
+            textAlign: TextAlign.end,
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              color: isPhone && value != 'Chưa có thông tin' ? Colors.blue.shade700 : null,
+            ),
           ),
         ),
       ],
