@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rental_management/app/router/app_router.dart';
@@ -11,6 +11,9 @@ import 'package:rental_management/features/dashboard/presentation/providers/dash
 import 'package:rental_management/features/dashboard/presentation/widgets/occupancy_progress_bar.dart';
 import 'package:rental_management/features/dashboard/presentation/widgets/revenue_summary_card.dart';
 import 'package:rental_management/features/dashboard/presentation/widgets/stat_summary_card.dart';
+
+import 'package:rental_management/core/widgets/theme_toggle_button.dart';
+import 'package:rental_management/app/theme/theme_provider.dart';
 
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
@@ -43,6 +46,7 @@ class DashboardScreen extends ConsumerWidget {
           ],
         ),
         actions: [
+          const ThemeToggleButton(),
           IconButton(
             icon: const Icon(Icons.refresh_rounded),
             tooltip: 'Làm mới',
@@ -202,6 +206,20 @@ class DashboardScreen extends ConsumerWidget {
                   icon: Icons.receipt_long_outlined,
                   color: Colors.orange.shade800,
                   onTap: () => context.push(AppRoutes.invoices),
+                ),
+                const SizedBox(height: 8),
+
+                _buildNavigationTile(
+                  context,
+                  title: 'Giao diện hiển thị',
+                  subtitle: switch (ref.watch(themeModeProvider)) {
+                    ThemeMode.light => 'Đang sử dụng: Giao diện Sáng',
+                    ThemeMode.dark => 'Đang sử dụng: Giao diện Tối',
+                    ThemeMode.system => 'Đang sử dụng: Theo hệ thống',
+                  },
+                  icon: Icons.palette_outlined,
+                  color: Colors.purple.shade700,
+                  onTap: () => ThemeToggleButton.showThemeModeSelectionDialog(context, ref),
                 ),
               ],
             ),

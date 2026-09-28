@@ -1,5 +1,6 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rental_management/core/widgets/theme_toggle_button.dart';
 import 'package:rental_management/features/auth/presentation/widgets/login_form.dart';
 
 class LoginScreen extends ConsumerWidget {
@@ -10,6 +11,14 @@ class LoginScreen extends ConsumerWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: const [
+          ThemeToggleButton(),
+          SizedBox(width: 8),
+        ],
+      ),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(

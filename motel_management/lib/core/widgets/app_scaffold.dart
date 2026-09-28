@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rental_management/core/widgets/theme_toggle_button.dart';
 
 /// Standard application scaffold with consistent padding, app bar, and safe area handling.
 class AppScaffold extends StatelessWidget {
@@ -11,6 +12,7 @@ class AppScaffold extends StatelessWidget {
   final bool showBackButton;
   final VoidCallback? onBack;
   final PreferredSizeWidget? bottom;
+  final bool showThemeToggle;
 
   const AppScaffold({
     super.key,
@@ -23,6 +25,7 @@ class AppScaffold extends StatelessWidget {
     this.showBackButton = true,
     this.onBack,
     this.bottom,
+    this.showThemeToggle = true,
   });
 
   @override
@@ -38,7 +41,10 @@ class AppScaffold extends StatelessWidget {
                           onPressed: onBack ?? () => Navigator.of(context).pop(),
                         )
                       : null),
-              actions: actions,
+              actions: [
+                if (showThemeToggle) const ThemeToggleButton(),
+                ...?actions,
+              ],
               bottom: bottom,
             )
           : null,
