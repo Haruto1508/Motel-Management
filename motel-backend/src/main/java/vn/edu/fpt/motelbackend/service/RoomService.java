@@ -12,6 +12,7 @@ import vn.edu.fpt.motelbackend.enums.RoomStatus;
 import vn.edu.fpt.motelbackend.repository.*;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,10 +28,19 @@ public class RoomService {
     private final InvoiceRepository invoiceRepository;
 
     public List<RoomResponse> getRooms(String query, String status, Integer floor) {
-        String cleanQuery = (query != null && !query.trim().isEmpty()) ? query.trim() : null;
-        String cleanStatus = (status != null && !status.trim().isEmpty()) ? status.trim().toUpperCase() : null;
+        String cleanQuery = (query != null && !query.trim().isEmpty())
+                ? "%" + query.trim().toLowerCase() + "%"
+                : null;
+        RoomStatus roomStatus = null;
+        if (status != null && !status.trim().isEmpty()) {
+            try {
+                roomStatus = RoomStatus.valueOf(status.trim().toUpperCase());
+            } catch (IllegalArgumentException e) {
+                return Collections.emptyList();
+            }
+        }
 
-        return roomRepository.findWithFilters(cleanQuery, cleanStatus, floor)
+        return roomRepository.findWithFilters(cleanQuery, roomStatus, floor)
                 .stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());

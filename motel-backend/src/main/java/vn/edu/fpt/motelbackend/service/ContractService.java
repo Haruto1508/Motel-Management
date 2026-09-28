@@ -28,7 +28,9 @@ public class ContractService {
     private final TenantRepository tenantRepository;
 
     public List<ContractResponse> getContracts(String query, String status) {
-        String cleanQuery = (query != null && !query.trim().isEmpty()) ? query.trim() : null;
+        String cleanQuery = (query != null && !query.trim().isEmpty())
+                ? "%" + query.trim().toLowerCase() + "%"
+                : null;
         String cleanStatus = (status != null && !status.trim().isEmpty()) ? status.trim().toUpperCase() : null;
 
         return contractRepository.findWithFilters(cleanQuery, cleanStatus)

@@ -29,7 +29,9 @@ public class InvoiceService {
         String cleanRoomId = (roomId != null && !roomId.trim().isEmpty()) ? roomId.trim() : null;
         String cleanMonth = (billingMonth != null && !billingMonth.trim().isEmpty()) ? billingMonth.trim() : null;
         String cleanStatus = (status != null && !status.trim().isEmpty()) ? status.trim().toUpperCase() : null;
-        String cleanQuery = (query != null && !query.trim().isEmpty()) ? query.trim() : null;
+        String cleanQuery = (query != null && !query.trim().isEmpty())
+                ? "%" + query.trim().toLowerCase() + "%"
+                : null;
 
         return invoiceRepository.findWithFilters(cleanRoomId, cleanMonth, cleanStatus, cleanQuery)
                 .stream()

@@ -16,9 +16,9 @@ public interface InvoiceRepository extends JpaRepository<Invoice, String> {
            "(:roomId IS NULL OR i.room.id = :roomId) AND " +
            "(:billingMonth IS NULL OR i.billingMonth = :billingMonth) AND " +
            "(:status IS NULL OR i.status = :status) AND " +
-           "(:query IS NULL OR LOWER(i.invoiceNumber) LIKE LOWER(CONCAT('%', :query, '%')) " +
-           "OR LOWER(i.tenantName) LIKE LOWER(CONCAT('%', :query, '%')) " +
-           "OR LOWER(i.room.roomCode) LIKE LOWER(CONCAT('%', :query, '%'))) " +
+           "(:query IS NULL OR LOWER(i.invoiceNumber) LIKE :query " +
+           "OR LOWER(i.tenantName) LIKE :query " +
+           "OR LOWER(i.room.roomCode) LIKE :query) " +
            "ORDER BY i.dueDate DESC")
     List<Invoice> findWithFilters(@Param("roomId") String roomId,
                                   @Param("billingMonth") String billingMonth,

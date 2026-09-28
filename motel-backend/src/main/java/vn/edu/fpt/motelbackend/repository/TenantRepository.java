@@ -12,9 +12,9 @@ import java.util.List;
 public interface TenantRepository extends JpaRepository<Tenant, String> {
 
     @Query("SELECT t FROM Tenant t WHERE " +
-           "(:query IS NULL OR LOWER(t.fullName) LIKE LOWER(CONCAT('%', :query, '%')) " +
-           "OR t.phone LIKE CONCAT('%', :query, '%') " +
-           "OR t.identityCard LIKE CONCAT('%', :query, '%')) AND " +
+           "(:query IS NULL OR LOWER(t.fullName) LIKE :query " +
+           "OR t.phone LIKE :query " +
+           "OR t.identityCard LIKE :query) AND " +
            "(:status IS NULL OR t.status = :status) " +
            "ORDER BY t.createdAt DESC")
     List<Tenant> findWithFilters(@Param("query") String query, @Param("status") String status);

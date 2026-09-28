@@ -13,9 +13,9 @@ import java.util.Optional;
 public interface ContractRepository extends JpaRepository<Contract, String> {
 
     @Query("SELECT c FROM Contract c WHERE " +
-           "(:query IS NULL OR LOWER(c.contractNumber) LIKE LOWER(CONCAT('%', :query, '%')) " +
-           "OR LOWER(c.room.roomCode) LIKE LOWER(CONCAT('%', :query, '%')) " +
-           "OR LOWER(c.primaryTenant.fullName) LIKE LOWER(CONCAT('%', :query, '%'))) AND " +
+           "(:query IS NULL OR LOWER(c.contractNumber) LIKE :query " +
+           "OR LOWER(c.room.roomCode) LIKE :query " +
+           "OR LOWER(c.primaryTenant.fullName) LIKE :query) AND " +
            "(:status IS NULL OR c.status = :status) " +
            "ORDER BY c.createdAt DESC")
     List<Contract> findWithFilters(@Param("query") String query, @Param("status") String status);

@@ -22,7 +22,9 @@ public class TenantService {
     private final RoomMemberRepository roomMemberRepository;
 
     public List<TenantResponse> getTenants(String query, String status) {
-        String cleanQuery = (query != null && !query.trim().isEmpty()) ? query.trim() : null;
+        String cleanQuery = (query != null && !query.trim().isEmpty())
+                ? "%" + query.trim().toLowerCase() + "%"
+                : null;
         String cleanStatus = (status != null && !status.trim().isEmpty()) ? status.trim().toUpperCase() : null;
 
         return tenantRepository.findWithFilters(cleanQuery, cleanStatus)
