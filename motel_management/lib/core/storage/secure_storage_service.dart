@@ -27,39 +27,47 @@ class SecureStorageService {
             );
 
   Future<void> saveAccessToken(String token) async {
-    try {
-      await _storage.write(key: AppConstants.keyAccessToken, value: token);
-    } catch (e) {
-      debugPrint('⚠️ [SecureStorage] Write access token fallback: $e');
+    if (!kIsWeb) {
+      try {
+        await _storage.write(key: AppConstants.keyAccessToken, value: token);
+      } catch (e) {
+        debugPrint('⚠️ [SecureStorage] Write access token fallback: $e');
+      }
     }
     await preferences?.setString(AppConstants.keyAccessToken, token);
   }
 
   Future<String?> getAccessToken() async {
-    try {
-      final token = await _storage.read(key: AppConstants.keyAccessToken);
-      if (token != null && token.isNotEmpty) return token;
-    } catch (e) {
-      debugPrint('⚠️ [SecureStorage] Read access token fallback: $e');
+    if (!kIsWeb) {
+      try {
+        final token = await _storage.read(key: AppConstants.keyAccessToken);
+        if (token != null && token.isNotEmpty) return token;
+      } catch (e) {
+        debugPrint('⚠️ [SecureStorage] Read access token fallback: $e');
+      }
     }
     return preferences?.getString(AppConstants.keyAccessToken);
   }
 
   Future<void> saveRefreshToken(String token) async {
-    try {
-      await _storage.write(key: AppConstants.keyRefreshToken, value: token);
-    } catch (e) {
-      debugPrint('⚠️ [SecureStorage] Write refresh token fallback: $e');
+    if (!kIsWeb) {
+      try {
+        await _storage.write(key: AppConstants.keyRefreshToken, value: token);
+      } catch (e) {
+        debugPrint('⚠️ [SecureStorage] Write refresh token fallback: $e');
+      }
     }
     await preferences?.setString(AppConstants.keyRefreshToken, token);
   }
 
   Future<String?> getRefreshToken() async {
-    try {
-      final token = await _storage.read(key: AppConstants.keyRefreshToken);
-      if (token != null && token.isNotEmpty) return token;
-    } catch (e) {
-      debugPrint('⚠️ [SecureStorage] Read refresh token fallback: $e');
+    if (!kIsWeb) {
+      try {
+        final token = await _storage.read(key: AppConstants.keyRefreshToken);
+        if (token != null && token.isNotEmpty) return token;
+      } catch (e) {
+        debugPrint('⚠️ [SecureStorage] Read refresh token fallback: $e');
+      }
     }
     return preferences?.getString(AppConstants.keyRefreshToken);
   }
@@ -75,16 +83,18 @@ class SecureStorageService {
   }
 
   Future<void> clearAuthTokens() async {
-    try {
-      await Future.wait([
-        _storage.delete(key: AppConstants.keyAccessToken),
-        _storage.delete(key: AppConstants.keyRefreshToken),
-        _storage.delete(key: AppConstants.keyUserId),
-        _storage.delete(key: AppConstants.keyUserEmail),
-        _storage.delete(key: AppConstants.keyUserRole),
-      ]);
-    } catch (e) {
-      debugPrint('⚠️ [SecureStorage] Clear tokens fallback: $e');
+    if (!kIsWeb) {
+      try {
+        await Future.wait([
+          _storage.delete(key: AppConstants.keyAccessToken),
+          _storage.delete(key: AppConstants.keyRefreshToken),
+          _storage.delete(key: AppConstants.keyUserId),
+          _storage.delete(key: AppConstants.keyUserEmail),
+          _storage.delete(key: AppConstants.keyUserRole),
+        ]);
+      } catch (e) {
+        debugPrint('⚠️ [SecureStorage] Clear tokens fallback: $e');
+      }
     }
     await Future.wait([
       preferences?.remove(AppConstants.keyAccessToken) ?? Future.value(true),
@@ -96,38 +106,46 @@ class SecureStorageService {
   }
 
   Future<void> write(String key, String value) async {
-    try {
-      await _storage.write(key: key, value: value);
-    } catch (e) {
-      debugPrint('⚠️ [SecureStorage] Write key fallback: $e');
+    if (!kIsWeb) {
+      try {
+        await _storage.write(key: key, value: value);
+      } catch (e) {
+        debugPrint('⚠️ [SecureStorage] Write key fallback: $e');
+      }
     }
     await preferences?.setString(key, value);
   }
 
   Future<String?> read(String key) async {
-    try {
-      final val = await _storage.read(key: key);
-      if (val != null) return val;
-    } catch (e) {
-      debugPrint('⚠️ [SecureStorage] Read key fallback: $e');
+    if (!kIsWeb) {
+      try {
+        final val = await _storage.read(key: key);
+        if (val != null) return val;
+      } catch (e) {
+        debugPrint('⚠️ [SecureStorage] Read key fallback: $e');
+      }
     }
     return preferences?.getString(key);
   }
 
   Future<void> delete(String key) async {
-    try {
-      await _storage.delete(key: key);
-    } catch (e) {
-      debugPrint('⚠️ [SecureStorage] Delete key fallback: $e');
+    if (!kIsWeb) {
+      try {
+        await _storage.delete(key: key);
+      } catch (e) {
+        debugPrint('⚠️ [SecureStorage] Delete key fallback: $e');
+      }
     }
     await preferences?.remove(key);
   }
 
   Future<void> deleteAll() async {
-    try {
-      await _storage.deleteAll();
-    } catch (e) {
-      debugPrint('⚠️ [SecureStorage] DeleteAll fallback: $e');
+    if (!kIsWeb) {
+      try {
+        await _storage.deleteAll();
+      } catch (e) {
+        debugPrint('⚠️ [SecureStorage] DeleteAll fallback: $e');
+      }
     }
   }
 }
