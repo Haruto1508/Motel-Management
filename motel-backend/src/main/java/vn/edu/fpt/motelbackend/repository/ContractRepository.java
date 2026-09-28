@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import vn.edu.fpt.motelbackend.entity.Contract;
+import vn.edu.fpt.motelbackend.enums.ContracStatus;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,9 +19,9 @@ public interface ContractRepository extends JpaRepository<Contract, String> {
            "OR LOWER(c.primaryTenant.fullName) LIKE :query) AND " +
            "(:status IS NULL OR c.status = :status) " +
            "ORDER BY c.createdAt DESC")
-    List<Contract> findWithFilters(@Param("query") String query, @Param("status") String status);
+    List<Contract> findWithFilters(@Param("query") String query, @Param("status") ContracStatus status);
 
-    Optional<Contract> findFirstByRoomIdAndStatus(String roomId, String status);
+    Optional<Contract> findFirstByRoomIdAndStatus(String roomId, ContracStatus status);
 
     List<Contract> findByRoomId(String roomId);
 }

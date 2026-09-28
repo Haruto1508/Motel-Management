@@ -8,6 +8,7 @@ import vn.edu.fpt.motelbackend.dto.invoice.InvoiceResponse;
 import vn.edu.fpt.motelbackend.dto.room.*;
 import vn.edu.fpt.motelbackend.dto.utility.UtilityReadingResponse;
 import vn.edu.fpt.motelbackend.entity.*;
+import vn.edu.fpt.motelbackend.enums.ContracStatus;
 import vn.edu.fpt.motelbackend.enums.RoomStatus;
 import vn.edu.fpt.motelbackend.repository.*;
 
@@ -66,7 +67,7 @@ public class RoomService {
                 .collect(Collectors.toList());
 
         // Active Contract
-        ContractResponse activeContract = contractRepository.findFirstByRoomIdAndStatus(id, "ACTIVE")
+        ContractResponse activeContract = contractRepository.findFirstByRoomIdAndStatus(id, ContracStatus.ACTIVE)
                 .map(c -> ContractResponse.builder()
                         .id(c.getId())
                         .contractNumber(c.getContractNumber())
@@ -78,7 +79,7 @@ public class RoomService {
                         .endDate(c.getEndDate())
                         .depositAmount(c.getDepositAmount())
                         .monthlyRent(c.getMonthlyRent())
-                        .status(c.getStatus().toString())
+                        .status(c.getStatus() != null ? c.getStatus().name() : "ACTIVE")
                         .createdAt(c.getCreatedAt())
                         .updatedAt(c.getUpdatedAt())
                         .build())

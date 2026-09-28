@@ -8,6 +8,7 @@ import vn.edu.fpt.motelbackend.dto.invoice.InvoiceResponse;
 import vn.edu.fpt.motelbackend.dto.invoice.PaymentRequest;
 import vn.edu.fpt.motelbackend.dto.invoice.PaymentResponse;
 import vn.edu.fpt.motelbackend.entity.*;
+import vn.edu.fpt.motelbackend.enums.ContracStatus;
 import vn.edu.fpt.motelbackend.repository.*;
 
 import java.time.LocalDateTime;
@@ -50,7 +51,7 @@ public class InvoiceService {
         Room room = roomRepository.findById(request.getRoomId())
                 .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy phòng với ID: " + request.getRoomId()));
 
-        Optional<Contract> contractOpt = contractRepository.findFirstByRoomIdAndStatus(room.getId(), "ACTIVE");
+        Optional<Contract> contractOpt = contractRepository.findFirstByRoomIdAndStatus(room.getId(), ContracStatus.ACTIVE);
         String tenantName = contractOpt.map(c -> c.getPrimaryTenant().getFullName()).orElse("Khách thuê phòng " + room.getRoomCode());
 
         double roomAmt = request.getRoomAmount();

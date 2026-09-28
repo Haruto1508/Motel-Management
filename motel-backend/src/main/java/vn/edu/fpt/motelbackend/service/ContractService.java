@@ -32,9 +32,15 @@ public class ContractService {
         String cleanQuery = (query != null && !query.trim().isEmpty())
                 ? "%" + query.trim().toLowerCase() + "%"
                 : null;
-        String cleanStatus = (status != null && !status.trim().isEmpty()) ? status.trim().toUpperCase() : null;
+        ContracStatus contractStatus = null;
+        if (status != null && !status.trim().isEmpty()) {
+            try {
+                contractStatus = ContracStatus.valueOf(status.trim().toUpperCase());
+            } catch (IllegalArgumentException ignored) {
+            }
+        }
 
-        return contractRepository.findWithFilters(cleanQuery, cleanStatus)
+        return contractRepository.findWithFilters(cleanQuery, contractStatus)
                 .stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
@@ -121,7 +127,7 @@ public class ContractService {
                 .endDate(contract.getEndDate())
                 .depositAmount(contract.getDepositAmount())
                 .monthlyRent(contract.getMonthlyRent())
-                .status(contract.getStatus().toString())
+                .status(contract.getStatus() != null ? contract.getStatus().name() : "ACTIVE")
                 .createdAt(contract.getCreatedAt())
                 .updatedAt(contract.getUpdatedAt())
                 .build();
