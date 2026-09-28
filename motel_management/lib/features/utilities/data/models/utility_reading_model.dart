@@ -38,7 +38,7 @@ class UtilityReadingModel {
 
   factory UtilityReadingModel.fromJson(Map<String, dynamic> json) {
     return UtilityReadingModel(
-      id: json['id'] as String,
+      id: json['id']?.toString() ?? '',
       roomId: json['roomId'] as String? ?? json['room_id'] as String? ?? '',
       roomCode: json['roomCode'] as String? ?? json['room_code'] as String?,
       billingMonth: json['billingMonth'] as String? ?? json['billing_month'] as String? ?? '',
@@ -47,18 +47,18 @@ class UtilityReadingModel {
           : (json['reading_date'] != null
               ? DateTime.tryParse(json['reading_date'].toString()) ?? DateTime.now()
               : DateTime.now()),
-      previousElectricity: (json['previousElectricity'] ?? json['previous_electricity']) != null
-          ? (json['previousElectricity'] ?? json['previous_electricity'] as num).toDouble()
-          : null,
+      previousElectricity: (json['previousElectricity'] as num?)?.toDouble() ??
+          (json['previous_electricity'] as num?)?.toDouble(),
       currentElectricity: ((json['currentElectricity'] ?? json['current_electricity'] ?? 0) as num).toDouble(),
       electricityPrice: ((json['electricityPrice'] ?? json['electricity_price'] ?? 3500) as num).toDouble(),
-      previousWater: (json['previousWater'] ?? json['previous_water']) != null
-          ? (json['previousWater'] ?? json['previous_water'] as num).toDouble()
-          : null,
+      previousWater: (json['previousWater'] as num?)?.toDouble() ??
+          (json['previous_water'] as num?)?.toDouble(),
       currentWater: ((json['currentWater'] ?? json['current_water'] ?? 0) as num).toDouble(),
       waterPrice: ((json['waterPrice'] ?? json['water_price'] ?? 25000) as num).toDouble(),
       waterCalcMethod: json['waterCalcMethod'] as String? ?? json['water_calc_method'] as String? ?? 'METER',
-      numberOfTenants: (json['numberOfTenants'] ?? json['number_of_tenants'] ?? 1) as int,
+      numberOfTenants: (json['numberOfTenants'] as num?)?.toInt() ??
+          (json['number_of_tenants'] as num?)?.toInt() ??
+          1,
       note: json['note'] as String?,
       createdAt: json['createdAt'] != null
           ? DateTime.tryParse(json['createdAt'].toString())

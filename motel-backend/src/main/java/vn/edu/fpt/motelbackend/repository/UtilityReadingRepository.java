@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface UtilityReadingRepository extends JpaRepository<UtilityReading, String> {
 
-    @Query("SELECT u FROM UtilityReading u WHERE " +
+    @Query("SELECT u FROM UtilityReading u LEFT JOIN FETCH u.room WHERE " +
            "(:roomId IS NULL OR u.room.id = :roomId) AND " +
            "(:billingMonth IS NULL OR u.billingMonth = :billingMonth) " +
            "ORDER BY u.readingDate DESC")

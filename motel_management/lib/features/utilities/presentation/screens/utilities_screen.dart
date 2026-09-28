@@ -150,6 +150,8 @@ class _RoomReadingTile extends ConsumerWidget {
               children: [
                 Text(
                   room.name as String,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -167,6 +169,8 @@ class _RoomReadingTile extends ConsumerWidget {
                     }
                     return Text(
                       'Gần nhất: ${latest.currentElectricity.toStringAsFixed(0)} kWh | ${latest.currentWater.toStringAsFixed(0)} m³ (${latest.billingMonth})',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: theme.colorScheme.onSurfaceVariant,
                       ),
@@ -231,11 +235,10 @@ class _HistoryTab extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  _buildStatItem('Tổng điện', '${totalKwh.toStringAsFixed(0)} kWh', Colors.amber.shade800),
-                  _buildStatItem('Tổng nước', '${totalM3.toStringAsFixed(0)} m³', Colors.blue.shade600),
-                  _buildStatItem('Tổng tiền', CurrencyFormatter.format(totalAmount), theme.colorScheme.primary),
+                  Expanded(child: _buildStatItem('Tổng điện', '${totalKwh.toStringAsFixed(0)} kWh', Colors.amber.shade800)),
+                  Expanded(child: _buildStatItem('Tổng nước', '${totalM3.toStringAsFixed(0)} m³', Colors.blue.shade600)),
+                  Expanded(child: _buildStatItem('Tổng tiền', CurrencyFormatter.format(totalAmount), theme.colorScheme.primary)),
                 ],
               ),
             ),
@@ -309,8 +312,16 @@ class _ServicesTab extends ConsumerWidget {
               return ServiceConfigTile(
                 key: ValueKey(svc.id),
                 service: svc,
-                onUpdatePrice: (newPrice) {
-                  ref.read(utilitiesControllerProvider.notifier).updateServicePrice(svc.id, newPrice);
+                onUpdatePrice: (newPrice) async {
+                  final ok = await ref.read(utilitiesControllerProvider.notifier).updateServicePrice(svc.id, newPrice);
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(ok ? 'Cập nhật giá ${svc.name} thành công' : 'Không thể cập nhật đơn giá'),
+                        backgroundColor: ok ? Colors.green : Colors.red,
+                      ),
+                    );
+                  }
                 },
               );
             }),

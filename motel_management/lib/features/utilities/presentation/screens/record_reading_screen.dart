@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rental_management/core/utils/currency_formatter.dart';
@@ -41,6 +41,7 @@ class _RecordReadingScreenState extends ConsumerState<RecordReadingScreen> {
   WaterCalcMethod _waterCalcMethod = WaterCalcMethod.meter;
   DateTime _readingDate = DateTime.now();
   late String _billingMonth;
+  late final TextEditingController _billingMonthController;
 
   bool _isLoadingLatest = false;
 
@@ -49,6 +50,7 @@ class _RecordReadingScreenState extends ConsumerState<RecordReadingScreen> {
     super.initState();
     final now = DateTime.now();
     _billingMonth = '${now.month.toString().padLeft(2, '0')}/${now.year}';
+    _billingMonthController = TextEditingController(text: _billingMonth);
     _selectedRoomId = widget.initialRoomId;
 
     if (_selectedRoomId != null) {
@@ -60,6 +62,7 @@ class _RecordReadingScreenState extends ConsumerState<RecordReadingScreen> {
 
   @override
   void dispose() {
+    _billingMonthController.dispose();
     _prevElectricityController.dispose();
     _currElectricityController.dispose();
     _electricityPriceController.dispose();
@@ -146,7 +149,9 @@ class _RecordReadingScreenState extends ConsumerState<RecordReadingScreen> {
 
     final params = RecordUtilityParams(
       roomId: _selectedRoomId!,
-      billingMonth: _billingMonth,
+      billingMonth: _billingMonthController.text.trim().isNotEmpty
+          ? _billingMonthController.text.trim()
+          : _billingMonth,
       readingDate: _readingDate,
       previousElectricity: _prevElectricity,
       currentElectricity: _currElectricity,
@@ -200,8 +205,11 @@ class _RecordReadingScreenState extends ConsumerState<RecordReadingScreen> {
                     const SizedBox(height: 16),
                     roomsAsync.when(
                       data: (rooms) {
+                        final hasSelectedRoom = rooms.any((r) => r.id == _selectedRoomId);
+                        final selectedValue = hasSelectedRoom ? _selectedRoomId : null;
+
                         return DropdownButtonFormField<String>(
-                          initialValue: _selectedRoomId,
+                          initialValue: selectedValue,
                           decoration: const InputDecoration(
                             labelText: 'Chọn phòng trọ *',
                             prefixIcon: Icon(Icons.meeting_room_outlined),
@@ -235,7 +243,7 @@ class _RecordReadingScreenState extends ConsumerState<RecordReadingScreen> {
                         Expanded(
                           child: AppTextField(
                             label: 'Kỳ thanh toán *',
-                            controller: TextEditingController(text: _billingMonth),
+                            controller: _billingMonthController,
                             prefixIcon: const Icon(Icons.calendar_month_outlined),
                             onChanged: (val) => _billingMonth = val,
                           ),

@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UtilityService {
 
     private final UtilityReadingRepository utilityReadingRepository;
@@ -117,8 +118,8 @@ public class UtilityService {
 
         return UtilityReadingResponse.builder()
                 .id(u.getId())
-                .roomId(u.getRoom().getId())
-                .roomCode(u.getRoom().getRoomCode())
+                .roomId(u.getRoom() != null ? u.getRoom().getId() : null)
+                .roomCode(u.getRoom() != null ? u.getRoom().getRoomCode() : null)
                 .billingMonth(u.getBillingMonth())
                 .previousElectricity(u.getPreviousElectricity())
                 .currentElectricity(u.getCurrentElectricity())

@@ -165,8 +165,8 @@ class UtilityReadingCard extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 12),
-        SizedBox(
-          width: 80,
+        ConstrainedBox(
+          constraints: const BoxConstraints(minWidth: 80),
           child: Text(
             amountText,
             textAlign: TextAlign.end,

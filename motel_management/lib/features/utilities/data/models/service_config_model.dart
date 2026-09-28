@@ -19,12 +19,25 @@ class ServiceConfigModel {
 
   factory ServiceConfigModel.fromJson(Map<String, dynamic> json) {
     return ServiceConfigModel(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      type: json['type'] as String? ?? 'FIXED_ROOM',
+      id: json['id']?.toString() ?? '',
+      name: json['name'] as String? ??
+          json['serviceName'] as String? ??
+          json['service_name'] as String? ??
+          '',
+      type: json['type'] as String? ??
+          json['calcMethod'] as String? ??
+          json['calc_method'] as String? ??
+          'FIXED_ROOM',
       unitPrice: ((json['unitPrice'] ?? json['unit_price'] ?? 0) as num).toDouble(),
-      unitName: json['unitName'] as String? ?? json['unit_name'] as String? ?? '',
-      isActive: json['isActive'] == 1 || json['isActive'] == true || json['is_active'] == 1 || json['is_active'] == true,
+      unitName: json['unitName'] as String? ??
+          json['unit'] as String? ??
+          json['unit_name'] as String? ??
+          '',
+      isActive: json['isActive'] == 1 ||
+          json['isActive'] == true ||
+          json['is_active'] == 1 ||
+          json['is_active'] == true ||
+          json['isActive'] == null,
     );
   }
 

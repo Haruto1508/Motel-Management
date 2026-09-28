@@ -24,6 +24,29 @@ class UtilityRemoteDataSourceImpl implements UtilityRemoteDataSource {
 
   UtilityRemoteDataSourceImpl(this._apiClient);
 
+  Map<String, dynamic> _extractDataMap(dynamic rawData) {
+    if (rawData is Map<String, dynamic>) {
+      if (rawData.containsKey('data')) {
+        final d = rawData['data'];
+        if (d is Map<String, dynamic>) return d;
+        if (d == null) return <String, dynamic>{};
+      }
+      return rawData;
+    }
+    return <String, dynamic>{};
+  }
+
+  List<dynamic> _extractDataList(dynamic rawData) {
+    if (rawData is Map<String, dynamic>) {
+      final d = rawData['data'];
+      if (d is List) return d;
+      return [];
+    } else if (rawData is List) {
+      return rawData;
+    }
+    return [];
+  }
+
   @override
   Future<List<UtilityReadingModel>> getReadings({String? roomId, String? billingMonth}) async {
     final queryParams = <String, dynamic>{};
@@ -35,13 +58,10 @@ class UtilityRemoteDataSourceImpl implements UtilityRemoteDataSource {
       queryParameters: queryParams.isNotEmpty ? queryParams : null,
     );
 
-    final rawData = response.data;
-    final List<dynamic> list = rawData is Map<String, dynamic>
-        ? (rawData['data'] as List<dynamic>? ?? [])
-        : (rawData is List ? rawData : []);
-
+    final list = _extractDataList(response.data);
     return list
-        .map((item) => UtilityReadingModel.fromJson(item as Map<String, dynamic>))
+        .whereType<Map<String, dynamic>>()
+        .map((item) => UtilityReadingModel.fromJson(item))
         .toList();
   }
 
@@ -56,12 +76,7 @@ class UtilityRemoteDataSourceImpl implements UtilityRemoteDataSource {
       final rawData = response.data;
       if (rawData == null) return null;
 
-      final Map<String, dynamic> data = rawData is Map<String, dynamic>
-          ? (rawData['data'] is Map<String, dynamic>
-              ? rawData['data'] as Map<String, dynamic>
-              : rawData)
-          : <String, dynamic>{};
-
+      final data = _extractDataMap(rawData);
       if (data.isEmpty) return null;
       return UtilityReadingModel.fromJson(data);
     } catch (_) {
@@ -76,13 +91,7 @@ class UtilityRemoteDataSourceImpl implements UtilityRemoteDataSource {
       data: data,
     );
 
-    final rawData = response.data;
-    final Map<String, dynamic> resData = rawData is Map<String, dynamic>
-        ? (rawData['data'] is Map<String, dynamic>
-            ? rawData['data'] as Map<String, dynamic>
-            : rawData)
-        : <String, dynamic>{};
-
+    final resData = _extractDataMap(response.data);
     return UtilityReadingModel.fromJson(resData);
   }
 
@@ -93,13 +102,7 @@ class UtilityRemoteDataSourceImpl implements UtilityRemoteDataSource {
       data: data,
     );
 
-    final rawData = response.data;
-    final Map<String, dynamic> resData = rawData is Map<String, dynamic>
-        ? (rawData['data'] is Map<String, dynamic>
-            ? rawData['data'] as Map<String, dynamic>
-            : rawData)
-        : <String, dynamic>{};
-
+    final resData = _extractDataMap(response.data);
     return UtilityReadingModel.fromJson(resData);
   }
 
@@ -112,13 +115,10 @@ class UtilityRemoteDataSourceImpl implements UtilityRemoteDataSource {
   Future<List<ServiceConfigModel>> getServices() async {
     final response = await _apiClient.get(AppConstants.endpointServices);
 
-    final rawData = response.data;
-    final List<dynamic> list = rawData is Map<String, dynamic>
-        ? (rawData['data'] as List<dynamic>? ?? [])
-        : (rawData is List ? rawData : []);
-
+    final list = _extractDataList(response.data);
     return list
-        .map((item) => ServiceConfigModel.fromJson(item as Map<String, dynamic>))
+        .whereType<Map<String, dynamic>>()
+        .map((item) => ServiceConfigModel.fromJson(item))
         .toList();
   }
 
@@ -129,13 +129,7 @@ class UtilityRemoteDataSourceImpl implements UtilityRemoteDataSource {
       data: {'unitPrice': unitPrice},
     );
 
-    final rawData = response.data;
-    final Map<String, dynamic> resData = rawData is Map<String, dynamic>
-        ? (rawData['data'] is Map<String, dynamic>
-            ? rawData['data'] as Map<String, dynamic>
-            : rawData)
-        : <String, dynamic>{};
-
+    final resData = _extractDataMap(response.data);
     return ServiceConfigModel.fromJson(resData);
   }
 }
